@@ -5,6 +5,7 @@
 Q1. HTML 요소에 마우스를 갖다 대면 손가락 cursor로 보여주기
 - `<id="clickme" style="cursor:pointer;">`
 
+
 Q2. javascript에 대한 설명
 - `<script>`와 `</script>` 사이에 있는 코드는 순서를 아무렇게나 둬도 된다.
 - 왜냐하면 javascript는 event 기반이기 때문이다.

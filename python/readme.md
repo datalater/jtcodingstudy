@@ -1,5 +1,234 @@
 © 2017 SHAKEADE
 
+
+# 3강 기본 자료구조
+
+## 기본 자료구조
+
++ list, tuple, set, dict
+
+## Container
+
++ 여러 원소들을 가지고 있는 자료구조
+    + **list**, deque
+    + **set**, frozensets
+    + **dict**, defaultdict, OrderedDict, Counter
+    + **tuple**, namedtuple
+    + str
+
+    > 이번 시간에는 진하게 표시된 list, set, dict, tuple만 살펴본다. 나머지도 Container 자료구조에 속한다.
+
++ in 연산자로 멤버십 테스트를 지원
+
+```
+>>> 'hello' in 'hello world'
+True
+```
+
+## list
+
++ 생성문법: [], list(), list(iterable)
++ 여러 값을 순차적으로 저장, 순서를 보장
++ 리스트를 한 줄로 쓸 때에는 대개 끝에 쉼표를 쓰지 않는다.
++ 여러 줄로 나눠서 쓸 때는 끝에 쉼표를 쓴다. 항목 추가/삭제가 용이하기 때문이다.
+
+```
+numbers = [1, 3, 5, 6, 9]
+names = [
+    'Tom',
+    'Steve',
+    'Min',
+]
+```
++ 색인(index) 지원: 0부터 시작하여 1씩 증가
+
+    + 음수 색인 지원: 끝에서부터 역으로 -1부터 1씩 감소
+
+    > offset의 개념으로 접근하면 더 쉽게 알 수 있다.
+
++ 다른 타입의 값들로도 구성 가능
++ 한 list에 서로 다른 데이터 타입의 값을 넣을 수도 있지만, 가급적 같은 타입으로 맞춰주는 것이 보다 알기 쉬운 코드가 된다.
+
+```
+numbers = [1,3,5,7]               # 리스트 선언
+print(7 in numbers)               # 멤버십 체크
+print(numbers[0], numbers[-3])    # 색인 0과 -3의 값 출력
+print(len(numbers))               # 리스트의 길이 출력
+for i in numbers:                 # for 루프를 통해 list 내 모든 값 순회
+    print(i)                      # in 뒤에는 모든 container가 올 수 있다.
+
+bad_values = [10, 'Tom', (1,2,3)] # BAD
+```
+
++ 범위 밖의 색인을 참조하면 IndexError 예외가 발생한다.
+
+```
+IndexError: list index out of range
+```
+
++ 데이터 변경
+
+```
+numbers = [1, 3, 5, 7, 9]
+numbers[0] = 10                    # 지정 색인의 값을 변경
+numbers.append(11)                 # 끝에 값을 추가
+numbers.pop(3)                     # 특정 색인의 값을 출력하고 동시에 제거
+numbers.remove(5)                  # 특정 값을 1회 제거
+numbers.insert(1, 11)              # 특정 위치에 값을 추가
+```
+
++ 값을 잘라내기 (slice)
+    + 콜론(:)을 붙여주면 슬라이싱한다.
+    + 리스트[시작인덱스:끝인덱스:인덱스증가량]
+    + 시작인덱스 이상, 끝 인덱스 미만
+
+```
+numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+numbers[1:]                        # 1번 인덱스부터 끝까지
+numbers[1:8]                       # 1번 인덱스 이상 8번 인덱스 미만
+numbers[:8]                        # 처음부터 8번 인덱스까지
+numbers[1:8:2]                     # 2칸씩 step(간격)을 넣는다. [Out] 2, 4, 6, 8
+numbers[::-1]                      # 역순으로 정렬한다.
+```
+
++ 리스트 합치기
+    + 리스트끼리 더할 수 있다.
+
+```
+>>> numbers1 = [1,3,5,7]
+>>> numbers2 = [2,4,6,8]
+>>> print(numbers1 + numbers2)
+[1,3,5,7,2,4,6,8]
+```
+
++ List Comprehension
+
+```
+>>> numbers1 = [1,3,5,7]
+>>> numbers2 = [2,4,6,8]
+>>> print([i+j for (i,j) in zip(numbers1, numbers2)])
+[3,7,11,15]
+```
+
+## tuple
+
++ 생성문법: (), tuple(), tuple(iterable)
+
++ list와 유사하지만 변경 불가능(immutable)한 특성 : 추가, 삭제, 변경이 없음
+
++ 소괄호는 때에 따라, 우선순위 연산자 혹은 튜플로 쓰인다.
+    + 설정값으로 튜플을 쓸 때는 헷갈리면 리스트를 쓰는 게 낫다. 튜플을 쓰면 성능 상의 약간의 이득은 있으나 차이 거의 없다. 코드 오류가 나지 않는 것이 중요하다.
+
+```
+>>> tuple1 = (1 + 3)        # 우선순위(갯수가 1개일 때, 콤마를 생각하면 NOT 튜플)
+>>> tuple2 = (1 + 3,)       # 튜플
+>>> tuple3 = (3)            # 우선순위
+>>> tuple3 = (3,)           # 튜플
+
+>>> tuple4 = 1, 2           # 튜플. 괄호 없이도 튜플로 인식한다.
+```
+
++ packing/unpacking : list/tuple에서 동일하게 적용된다.
+
++ unpacking 시에 개수가 맞지 않으면 ValueError가 발생한다.
+
+```
+>>> numbers = (1,2,3,4,5,)          # packing - 다수 값을 하나의 변수에 넣는다.
+>>> v1, v2, v3, v4, v5 = numbers    # unpacking - 하나의 값을 다수의 변수에 나눠 담는다.
+
+>>> v1, v2, v3, v4 = numbers[:4]
+>>> v1, v2, v3, *others = numbers   # 처음 3개를 제외한 나머지는 others라는 list에 넣겠다.
+
+>>> *others, v3, v4, v5 = numbers
+>>> v1, v2, *others, v5 = numbers
+
+>>> v1, v2, v3, v4, v4, v5, v6, v7, v8 = (*numbers, 6, 7, 8)
+```
+
++ **swap**: list/tuple에 동일하게 적용
+
+```
+>>> x, y = 1, 2                     # x에는 1 대입, y에는 2 대입
+>>> x, y = y, x                     # x에는 y값을, y에는 x값을 동시에 대입
+```
+
+## set(집합형)
+
++ 중복을 허용하지 않는 데이터의 집합
+    + list/tuple에서 중복을 제거하고자 할 때, set을 활용하면 유용
+
++ list/tuple과 다르게 추가된 순서를 유지하지 않는다.
+
+```
+>>> set_numbers = {1,3,4,5,4,1,3,3,4}
+>>> set_numbers
+{1,3,4,5}
+
+>>> list_numbers = [1,1,2,2,3,2,2,1,1,1]
+>>> list_numbers = list(set(list_numbers))
+>>> list_numbers
+[1, 2, 3]
+```
+
++ 합집합, 교집합, 차집합, 여집합 연산 지원
+
+```
+>>> set_numbers1 - set_numbers2      # 차집합
+>>> set_numbers1 | set_numbers2      # 합집합
+>>> set_numbers1 & set_numbers2      # 교집합
+>>> set_numbers1 ^ set_numbers2      # 여집합
+```
+
+## dict(사전형)
+
++ Key와 Value의 쌍으로 구성된 집합
++ Key 중복을 허용하지 않음
++ 중괄호 내에 콜론(:)으로 Key/Value를 구분
+
+```
+dict_values = {'blue': 10, 'yellow': 3, 'red': 42}
+```
+
++ in 연산자로 멤버십 체크 지원 (Key의 등록 여부)
+
+    > key의 여부를 확인하는 것이지, value의 여부를 확인하는 것이 아니다!  
+    > value의 여부를 확인하려면 10 in dict_values.values()와 같이 멤버함수를 써야 한다.
+
++ 순회할 때도 Key 목록만 지원
++ 멤버함수
+    + .keys() : key 목록
+    + .values() : value 목록
+    + .items() : (key, value) 목록
+
+```
+>>> dict_values = {'blue': 10, 'yellow': 3, 'red': 42}
+>>> print(dict_values['blue'])
+10
+
+>>> dict_values['black'] = 30          # 새로운 Key:Value 등록
+>>> del dict_values['blue']            # 지정 Key:Value 제거
+```
+
++ for 루프 순회
+
+```
+>>> dict_values = {'blue': 10, 'yellow': 3, 'red': 42}
+>>> for key in dict_values:
+        print(key)
+red
+yellow
+blue
+>>> for (key, value) in dict_values.items():
+        print(key, value)
+red 42
+yellow 3
+blue 10
+```
+
+**끝.**
+
+---
+
 # 2강 데이터 타입
 
 ## 기본 데이터 타입
@@ -195,6 +424,8 @@ a, b, a
 >>> print(a)
 NameError: name 'a' is not defined
 ```
+
+**끝.**
 
 ---
 

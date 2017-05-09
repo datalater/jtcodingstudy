@@ -1,3 +1,213 @@
+ⓒ JMC 2017
+
+**주요 소스**  
+멋쟁이 사자처럼 강의
+
+---
+
+---
+
+## 05 멋사 3주차
+
+### MVC 런쓰루 복습
+
+Q1. 새 워크스페이스 - controller 생성 - view 파일 생성 - route 파일 수정
+- 워크 스페이스 제목: food
+- 아래 명령어를 기계적으로 따라한다.
+- `rails g controller tomato`
+
+```ruby
+# controller.rb
+
+    def potato
+
+    end
+```
+
+- 뷰 폴더에 함수에 대한 erb파일을 만든다. `views/tomato/potato.erb`
+
+```html
+<h1>원해?</h1>
+```
+
+- config폴더에서 route를 수정한다. `config/routes.rb`
+
+```ruby
+# routes.rb
+
+    root "tomato#potato"
+
+```
+
++ `Run Project` 후 웹 페이지 확인
+
+### Ruby 문법
+
+Q1. 리스트에서 랜덤 추출
+
+```ruby
+@food_list = ['짜장면', '피자', '탕수육', '순두부찌개', '쌀국수']
+@today_food = @food_list.sample
+```
+
+### 오늘의 랜덤 푸드
+
+Q1. 음식 이미지를 구글링으로 저장한 후 서버에 업로드한다.
+- `/app/assets/images`에 `jjm.jpg`, `tangsu.jpg`를 업로드한다.
+
+> **Note:** c9에서는 파일 제목을 한글로 쓰면 오류가 발생할 수 있다. 가령 `탕수육.jpg`로 올리면 에디터에서는 잘 보이지만, 막상 파일을 클릭하고 Rename 눌러보면 `ㅌㅏㅇㅅㅜㅇㅠㄱ.jpg` 이런 식으로 나오는 경우가 있다.
+
+
+Q2. 이미지 파일 이름을 활용해서 컨트롤러 코드를 수정한다.
+
+```ruby
+@food_list = ['짜장면', '탕수육', '제육볶음', '옐로우피자']
+@today_food = @food_list.sample
+@today_food_image = @today_food + ".jpg"
+```
+
+Q3. 이미지 파일을 view로 출력해본다.
+- rails에서 이미지 태그는 어떻게 쓸까? 구글링해보자.
+- 구글링: `rails image tag`
+
+```html
+<h1>오늘의 음식 추천!</h1>
+<!-- <img src="/images/jjm.jpg" /> -->
+
+<h2><%= @today_food %></h2>
+<%= image_tag "jjm.jpg" %>
+```
+
+Q4. javscript로 refresh 버튼 만들어보자.
+- 구글링: javscript refresh button
+
+```javascript
+<h1>오늘의 음식 추천!</h1>
+<a href="javascript:location.reload(true)">Refresh this page</a>
+<!-- <img src="/images/jjm.jpg" /> -->
+
+<h2><%= @today_food %></h2>
+<%= image_tag @today_food_image %>
+```
+
+**끝.**
+
+---
+
+## 04 멋사 2주차 5,6 번 강의
+
+### MVC
+
+Q1. 서버는 어떻게 구성되는가
+- Model
+- Controller
+- View
+
+Q2. 컴퓨터를 구성하는 모든 어플리케이션은 MVC로 이루어져있다.
+- 곤충은 머리/가슴/배로 이루어져있다
+
+Q3. MVC 설명
+- Model : 게시판 글이 다 담겨져 있는 곳
+- Controller : 모델에 있는 모든 데이터를 적당히 뽑아서 View에게 던져준다.
+- View : 던져받은 데이터를 예쁘게 꾸민다.
+
+> **Note:** 클라이언트가 HttpRequest(요청)를 보내면 서버는 MVC를 거쳐서 HttpResponse(응답)를 내보낸다.
+
+Q4. Ruby on Rails와 MVC
+- ROR은 MVC를 쓰기에 가장 최적화된 웹 프레임워크
+- 가장 쓰기 쉽다
+
+### MVC c9 실습
+
+Q1. MVC 중에서 C, 즉 controller를 배워보자.
+- View는 이미 배웠다.
+
+Q2. public 폴더는 영영 쓰지 않을 것이다.
+- 연습용이었다.
+
+Q3. 컨트롤러(controller) 생성
+- `rails g controller banana`
+- `g` stands for generate
+
+Q4. 우리가 앞으로 엄청나게 많이 쓰게 될 폴더
+- `/app/controllers`
+- `/app/models`
+- `/app/views`
+- `/config/routes.rb`
+
+Q5. `/app/controllers` 폴더를 열어보자
+- `banana_controller.rb`를 확인 후 클릭해본다.
+- 아래 소스코드 입력
+
+```ruby
+class BananaController < ApplicationController
+
+    def apple
+        "안녕하세요"
+    end
+
+end
+```
++ 함수 apple을 action이라고 부른다.
+
+Q6. 함수의 내용을 전달할 view를 만들어보자.
++ `/app/views/banana` - [New File] - `apple.erb`
++ 함수의 이름과 New File의 이름이 반드시 같아야 한다.
+
+Q7. view에 코드를 써보자.
+- `apple.erb`에 아래 소스코드를 입력한다.
+
+```html
+<h1>안녕하세요</h1>
+```
+
+Q8. routes에 코드를 써보자.
+- `config/routes.rb`를 열고 아래 소스코드를 입력한다.
+
+```ruby
+Rails.application.routes.draw do
+  root "banana#apple"
+
+(...생략...)
+```
+
+- `Run Project` 해보자.
+- 브라우저로 프로젝트 url을 열고 '안녕하세요'를 확인한다.
+
+Q9. controller에 변수 만들고, view에 변수 넣기
++ 아래 소스코드를 입력한다.
+
+```ruby
+# controller
+
+class BananaController < ApplicationController
+
+    def apple
+        @mango = "안녕!"
+        @name = "Jay"
+    end
+
+end
+```
+
+```html
+<!-- view -->
+
+<h1><%= @mango %></h1>
+<h1>내 이름은 <%= @name %>, 한국의 조커버그야.</h1>
+```
+
++ `Run Project`해서 프로젝트를 확인한다.
++ 이것이 controller와 view의 전부이다.
++ controller에서 어떤 연산을 하고 그 연산의 결과를 `@변수`에 넣고 `@변수`를 view로 전달한다.
++ `@변수`는 비둘기 역할을 한다. 비둘기! 뀨뀨!
+
+> **Notes:** Ruby 코드와 HTML 코드를 동시에 쓸 수 있다. 다만 Ruby 코드를 쓰려면 지금부터 Ruby 코드를 쓴다는 의미로 `<% @variable %>`를 표시해줘야 한다.
+
+**끝.**
+
+---
+
 ## 03 멋사 2주차 1번 강의
 
 #### jQuery 강의
@@ -40,8 +250,9 @@ Q7. copy&paste 주의사항
 - Source가 공개적으로 노출되어 있는 오픈 소스는 얼마든지 사용해도 좋다. 특히 학습 위주로 사용하면 안전하다.
 - 실제로 상용 LICENSE가 걸려있는 것을 사용하면 큰일난다.
 
----
+**끝.**
 
+---
 
 ## 02 멋사 1주차 8~9번 강의
 
@@ -117,9 +328,9 @@ Q3. .fadeOut() 코드 해석
 
 Q4. .fadeIn() 만들어서 없어진 놈 다시 나타나게 만들기 [실습]
 
----
----
+**끝.**
 
+---
 
 ## 01 멋사 1주차 1~7번 강의
 

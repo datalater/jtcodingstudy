@@ -5,9 +5,99 @@
 
 ---
 
+## 07 멋사 3주차 8번
+
+### 게시판 만들기 (1)
+
 ---
 
-## 05 멋사 3주차
+## 06 멋사 3주차 6번
+
+### 페이지간 점프하기
+
+Q1. MVC 런쓰루 복습하기
+
++ 새 워크스페이스
++ `rails g controller home index`
+    + controller와 action과 view와 routes를 한번에!
+        + `controllers/home_controller.rb`
+        + `def index`
+        + `views/home/index.html.erb`
+        + `config/routes.rb` - `get 'home/index'`
+
+Q2. routes.rb 파일 수정
++ view 파일 수정
+
+```html
+<h1>home/index.html.erb!!!!</h1>
+```
+
++ route 파일 수정
+
+
+```ruby
+get 'home/index'                
+# 'home/index'로 request url이 들어오면 home 컨트롤러의 index 함수로 처리한다.
+
+get 'name' => 'home#index'      
+# '/name'으로 request url이 들어오면 home 컨트롤러의 index 함수로 처리한다.
+
+get '/' => 'home#index'         
+# '/'으로 request url이 들어오면 home 컨트롤러의 index 함수로 처리한다.
+# root 'home#index'와 같은 뜻이다.
+```
+
++ `get '내가 연결하고 싶은 url' => '내가 연결하고 싶은 controller#function'`
++ url(`controller/function`)의 형태가 컨트롤러/함수(`controller#function`)와 정확히 일치하면 url만 써줘도 된다.
+
+Q3. 페이저 점프해보기
+
++ index.html.erb 파일을 수정한다.
+
+```html
+<!-- index.html.erb -->
+
+<h1>home/index.html.erb!!!!</h1>
+
+<hr>
+<a href="/hornet">말벌로 점프</a>
+```
+
++ 브라우저에서 실행해본다. routes 관련 오류가 뜬다.
+
+Q4. 새로운 url에 대한 action을 만들고, view파일을 만든다.
+
++ routes.rb 파일을 수정한다.
+
+```ruby
+get 'name' => 'home#index'
+get '/' => 'home#index'
+get 'hornet' => 'home#hornet'
+```
+
+
++ 새로운 action(`#hornet`)을 만들기 위해 home_controller.rb 파일을 수정한다.
+```ruby
+def index
+end
+
+def hornet
+end
+```
+
++ 새로운 action(`#hornet`)에 대한 view 파일(`hornet.erb`)을 만들고 수정한다.
+
+```html
+<h1>5cm 말벌의 습격!!</h1>
+<hr>
+<a href="/">메인으로 가기</a>
+```
+
+**끝.**
+
+---
+
+## 05 멋사 3주차 1,2,3,4번
 
 ### MVC 런쓰루 복습
 

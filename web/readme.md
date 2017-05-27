@@ -5,9 +5,187 @@
 
 ---
 
-## 07 멋사 3주차 8번
+# 08 멋사 3주차 10번
 
-### 게시판 만들기 (1)
+### 게시판 만들기 (3)
+
+
+
+---
+
+## 07 멋사 3주차 8, 9번
+
+### 게시판 만들기 (1), (2)
+
+Q1. MVC 초기 세팅
+
++ `rails g controller home index`
+
+Q2. root 페이지를 index로 연결하기 위해 routes.rb 파일 수정
+
+```ruby
+Rails.application.routes.draw do
+  root 'home#index'
+  get 'home/index'
+```
+
+Q3. Bootstrap CDN 복사
+
+```
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+```
+
+Q4. `views/layouts/application.html.erb` 파일 클릭
+
++ `<%= csrf_meta_tags %>` 아래 줄에 붙여넣기
+
+Q5. Bootstrap form 태그 붙여넣기
+
++ [Bootstrap form](http://getbootstrap.com/css/#forms)에서 Basic Example 코드 복사
++ `index.html.erb` 파일에 붙여넣기
++ 서버 refresh
++ file input과 check me out 블락 삭제하기
++ 서버 refresh. 양쪽이 너무 가장자리에 붙었으므로 `<div class = "container"></div>` 태그로 감싸주기
++ 현재 input 태그의 내용이 이메일과 패스워드로 되어 있다.
++ 다음과 같이 바꿔주자.
+
+
+Q6. form 태그 수정하기
+
++ Email >> 글 제목
+    + 그런데 글 제목에 글자를 입력하면 오류 메시지가 뜨면서 이메일 형식에 대한 유효성 검사를 한다.
++ `<input type="email">` >> `<input type="text">`
++ Password >> 글 내용
+    + 그런데 글 내용 칸에 글자를 입력하면 비밀번호 형식으로 나온다.
++ `<input type="password">` >> `<input type="text">`
++ 그리고 글 내용은 보통 한 줄짜리가 아니라 여러 줄로 쓰므로 태그를 바꿔준다.
++ 여러 줄을 쓰는 태그는 `<input>`이 아니라 `<textarea>` 태그를 쓴다.
++ [Google:Bootstrap textarea] 검색해보자.
++ 기존 `<input>` 라인을 삭제하고 `<textarea class="form-control" rows="5" id="comment" placeholder="내용을 입력하세요."></textarea>`를 붙여넣는다.
++ 각 칸에 글자를 입력하고 submit 눌러본다. 오류 메시지 뜨지 않는다.
+
+Q6-1. form 태그 수정하기 2
+
++ 글 제목과 글 내용 태그 각각에 name 옵션을 넣어준다.
++ `<input name="title>"`
++ `<textarea name="content>"`
+
+> **Note:** name은 원래 기본적으로 설정해야 할 뿐만 아니라, GET 방식으로 테스트할 때 URL의 변화를 보려면 name을 설정해야 한다.
+
+---
+
+Q7. HTTP 전송 방식 중 GET 에 대하여
+
++ 구글 검색해보자. [Google:구글]
++ url에서 `q=구글` >> `q=구글코리아`
++ 검색창이 자동으로 바뀌어 있다.
++ 주소만 바꿔도 자동으로 검색된다.
++ 이게 GET 방식이다.
+
+Q8. GET vs. POST
+
++ 내가 검색할 쿼리 내용을 주소에 그대로 노출하는 방식 = GET
++ 사용자의 request 내용을 url에 그대로 노출하는 방식 = GET
++ 사용자의 request 내용을 url에 노출하지 않는 방식 = POST
+
+
+Q9. GET vs. POST 가장 큰 차이점
+
++ GET은 URL에 이어붙이기 때문에 길이 제한이 있어서 많은 양의 데이터를 보내기 어렵다.
++ POST는 많은 양의 데이터를 보내기 적합한 전송 방식이다.
+
+Q10. GET vs. POST 사례
+
++ GET : 검색
++ POST : 게시판 글쓰기, 이메일 보내기, 파일 첨부
+
+> **Note:** 기본적으로 웹에서는 GET 방식이 대부분이다. 데이터를 전송할 때만 POST를 쓰고 그 외에는 모두 GET을 쓴다고 생각해도 OK.
+
+Q11. GET vs. POST 의미 차이
+
++ GET : 데이터를 가져온다
++ POST : 데이터를 전송한다
+
+---
+
+Q12. c9에 만든 게시판 글쓰기에 POST를 적용해보자.
+
+Q13. `routes.rb` 파일로 이동해서 post 방식으로 url과 함수를 맵핑한다.
+
+```ruby
+post '/write' => 'home#write'
+```
+
+Q14.` home_controller` 파일로 이동해서 post 방식을 사용할 함수를 만든다.
+
++ write 함수를 만든다.
+
+```ruby
+class HomeController < ApplicationController
+  def index
+  end
+
+  def write
+
+  end
+end
+```
+
+Q15. 함수를 만들었으니 view를 만들어준다.
+
++ `views/home - [New File] - write.html.erb`
+
+```html
+<h1>글이 정상적으로 등록되었습니다.</h1>
+```
+
+Q16. `index.html.erb` 파일로 이동
+
++ `<form>` 태그에서 submit 버튼을 눌렀을 때 어느 페이지로 이동할지 옵션을 정해줘야 한다.
++ 그 옵션을 `action`이라고 한다.
++ `action`에 대한 전송방식도 정해줘야 하는데 그 옵션을 `method`라고 한다.
+
+```html
+<form action="/write" method="POST">
+```
+
++ 위 코드의 뜻은, submit 버튼을 눌렀을 때 form 태그에서 입력받은 내용을 url `/write`에게 전달하되 주소에 내용을 노출시키지 않도록 POST 방식을 사용한다는 뜻이다.
+
+
+Q17. 서버 테스트
+
++ 글 제목과 글 내용을 입력하고 submit 버튼을 누른다.
++ 아마 아래와 같은 오류가 뜰 것이다.
+
+```
+ActionController::InvalidAuthenticityToken in HomeController#write
+```
+
++ `contorllers/application_controller` 파일로 이동
++ `protect_from_forgery with: :exception` >> `# protect_from_forgery with: :exception` 주석처리하기
++ 다시 글을 작성하고 submit 해보자.
+
+> **Note:** `protect_from_forgery with: :exception`는 해킹을 막아주는 보안 기능을 한다. 개발 테스트 단계에서는 주석처리 해두자.
+
+Q18. POST 방식을 GET으로 바꿔보자.
+
++ form 태그의 method를 get으로 바꾼다.
++ routes.rb 파일에서 POST를 get으로 바꾼다.
++ 서버에서 테스트해본다.
+
+Q19. 다시 POST로 되돌려준다.
+
++ URL을 확인해본다.
++ `/write`만 나올것이다.
+
+**끝.**
 
 ---
 

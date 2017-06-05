@@ -5,11 +5,85 @@
 
 ---
 
-# 08 멋사 3주차 10번
+## 09 
+
+---
+
+## 08 멋사 3주차 10번
 
 ### 게시판 만들기 (3)
 
+Q1. `write` 함수를 수정해서 실제로 쓴 내용을 변수에 담기
 
++ 변수를 활용한다.
+
+```ruby
+# controller.rb
+
+class HomeController < ApplicationController
+  def index
+  end
+
+  def write
+    @post_title = params[:title]
+    @post_content = params[:content]
+  end
+end
+```
+
++ `@post_title` : post의 title을 전달할 변수 이름을 `@post_title`로 짓는다.
++ `params[:title]` : 변수에 할당할 값으로 form 태그의 하위 태그 중 태그의 name이 title인 태그의 내용으로 지정한다.
+    + `<input name="title" type="text" class="form-control" id="exampleInputEmail1" placeholder="제목을 입력하세요.">`
++ 즉 form 태그의 값을 전달하는 변수는 다음과 같은 형태로 쓰면 된다.
+    + `@variable_name = params[:tag_name]`
+
+Q2. 컨트롤러의 변수를 view에서 출력하기
+
+```html
+ <!-- write.erb -->
+
+ <h1>글이 정상적으로 등록되었습니다.</h1>
+
+ <h2>여러분이 쓴 글의 제목은</h2>
+ <%= @post_title %>
+ <h2>여러분이 쓴 글의 내용은</h2>
+ <%= @post_content %>
+```
+
++ `<%= @variable_name %>` : 변수를 출력할 때
++ `<% @variable_name %>` : 변수를 불러내지만 출력하지는 않을 때
+
+Q3. 직접 테스트하기
+
++ 컨트롤러를 새로 작성했으니 server를 reset해준다.
++ 제목과 내용을 적고 submit을 눌러본다.
+
+Q4. 메인으로 가는 버튼을 만들기
+
+```html
+<!-- write.erb -->
+
+<h1>글이 정상적으로 등록되었습니다.</h1>
+
+<h2>여러분이 쓴 글의 제목은</h2>
+<%= @post_title %>
+<h2>여러분이 쓴 글의 내용은</h2>
+<%= @post_content %>
+
+<hr>
+
+<a href="/">메인으로 가기</a>
+```
+
++ 약 26줄의 코드를 작성했다.
++ 몇 줄 안되지만 오늘 배운 내용이 웹 개발의 핵심이다.
++ 여러 번 실습해보고 익혀보자.
+
+Q5. 게시판 만들기 (1), (2), (3)을 그대로 따라서 복습해본다.
+
++ 시작!
+
+**끝.**
 
 ---
 

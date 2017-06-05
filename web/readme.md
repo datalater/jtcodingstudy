@@ -5,7 +5,370 @@
 
 ---
 
-## 09 
+## 10 멋사 4주차 7번
+
+### 보낸 메일 기록하기 (2)~(4) ::: DB
+
+#### 모델에 대한 이론 설명
+
+Q1. M of MVC
+
++ M : 모델 (:= 데이터베이스)
+
+Q2. 모델은 4가지 행동을 한다.
+
++ CRUD
+    + C : Create : 데이터베이스를 쓰고
+    + R : read : 데이터베이스를 읽고
+    + U : Update : 데이터베이스를 수정하고
+    + D : Delete 또는 Destroy : 데이터베이스를 삭제한다.
+
++ 모든 웹서비스가 이런 동작을 한다. ex. 인스타그램
+    + 인스타그램에 사진 포스트를 쓰고
+    + 인스타그램 포스트를 읽고
+    + 인스타그램 포스트를 수정하고
+    + 인스타그램 포스트를 삭제한다.
+
+#### Submit 누르면 쓴 글을 자동으로 보여주는 리스트 페이지 구현하기
+
+Q3. 함수 구현 및 뷰 파일 생성
+
++ 컨트롤러에 `list` 함수 만든다.
+
+```ruby
+class HomeController < ApplicationController
+  def index
+  end
+
+  def write
+    @post_title = params[:title]
+    @post_content = params[:content]
+  end
+
+  def list
+
+  end
+end
+
+```
+
++ 뷰에 `list.erb` 파일 생성한다.
+
+```html
+<h1>지난 글 목록입니다.</h1>
+```
+
+Q4. `write` 함수에 redirect 기능 넣기
+
+```ruby
+class HomeController < ApplicationController
+  def index
+  end
+
+  def write
+    @post_title = params[:title]
+    @post_content = params[:content]
+    redirect_to "/list"
+  end
+
+  def list
+
+  end
+end
+```
+
++ `redirect_to`에 의해 write 함수는 더 이상 `write.erb` 뷰 파일을 출력하지 않고, 이제 `list.erb` 뷰 파일을 출력하게 된다.
+
+Q5. `write` 함수에 대한 route 추가하기
+
+```ruby
+Rails.application.routes.draw do
+  root 'home#index'
+  get 'home/index'
+  post '/write' => 'home#write'
+  get 'list' => 'home#list'
+```
+
++ 서버를 켜고 포스트 작성해서 submit 눌러본다.
++ `/list` 페이지가 나오는 것을 확인한다.
+
+#### 모델 생성 및 마이그레이트
+
+Q6. 모델 생성하기
+
++ bash 창을 클릭한다.
++ `rails g model post`
++ post라는 이름의 모델을 생성한다.
+
+Q7. 모델을 생성하면 2가지 파일이 자동 생성된다.
+
++ `/db/migrate` 폴더에 숫자로 시작하는 `create_posts.rb` 파일 생성
++ `/app/models` 폴더에 `post.rb` 파일 생성
+
+> **Note:** 당분간 `post.rb` 파일은 수정하지 않는다. migrate 폴더에 있는 파일은 자주 사용할 것이다.
+
+Q8. `create_posts.rb` 파일 코드 수정
+
++ 위와 같이 `migrate` 폴더에 있는 파일을 마이그레이션 파일이라고 한다.
+
+```ruby
+class CreatePosts < ActiveRecord::Migration
+  def change
+    create_table :posts do |t|
+
+      t.string "title"
+      t.string "content"
+
+      t.timestamps null: false
+    end
+  end
+end
+```
+
++ 코드를 작성하는 일반형은 다음과 같다.
+    + `t.데이터타입 "저장할 내용의 변수 이름"`
+    + `t.datatype "column_name"`
++ 예시
+    + t.string "title"
+    + t.integer "view_count" (조회수)
+    + t.datetime "date"
+    + t.float "eyesight"
++ DB 파일은 테이블로 구성되어 있는데, 위에 추가한 것들이 column을 구성하게 된다.
+    + 가령, `t.string "title"`과 `t.string "content"`에 의해서
+    + title 칼럼과 content 칼럼이 생성된다.
+    + 칼럼 이름을 여기서 처음 짓는 것이다.
+    + 컨트롤러의 변수(`post_title`) 또는 HTML 태그의 name(`title`)과 다르게 이름 지어도 상관없다.
+    + `t.string "title_column"`이라고 해도 된다.
+
+Q9. 마이그레이션 파일 작성 후 마이그레이트 하기
+
++ bash 창을 클릭한다.
++ `rake db:migrate`
++ 마이그레이트 명령어를 입력하면 데이터베이스 파일을 생성한다.
+    + `development.sqlite3`
+
+#### C of CRUD
+
+Q10. 컨트롤러를 모델과 연동하도록 `write` 함수 코드를 수정한다.
+
+```ruby
+class HomeController < ApplicationController
+  def index
+  end
+
+  def write
+    @post_title = params[:title]
+    @post_content = params[:content]
+
+    new_post = Post.new
+    new_post.title = @post_title
+    new_post.content = @post_content
+    new_post.save
+
+    redirect_to "/list"
+  end
+
+  def list
+
+  end
+end
+```
+
++ `new_post = Post.new`
+    + `Post`라는 모델의 새로운 인스턴스를 만든다.
+    + 그 인스턴스를 변수 `new_post`에 할당한다.
+    + DB 파일은 테이블로 구성되어 있는데, `Post.new` 명령어를 입력하는 순간, 새로운 row가 생성된다.
+
++ 위 코드를 더 줄여서 써도 된다.
+
+```ruby
+class HomeController < ApplicationController
+  def index
+  end
+
+  def write
+    new_post = Post.new
+    new_post.title = params[:title]
+    new_post.content = params[:content]
+    new_post.save
+
+    redirect_to "/list"
+  end
+
+  def list
+
+  end
+end
+```
+
+#### R of CRUD
+
+Q11. 모델의 모든 내용을 보여주도록 `list` 함수의 코드를 수정하기
+
+```ruby
+class HomeController < ApplicationController
+  def index
+  end
+
+  def write
+    @post_title = params[:title]
+    @post_content = params[:content]
+
+    new_post = Post.new
+    new_post.title = params[:title]
+    new_post.content = params[:content]
+    new_post.save
+
+    redirect_to "/list"
+  end
+
+  def list
+    @every_post = Post.all
+
+  end
+end
+```
+
++ 위에서 생성한 변수를 뷰에서 출력하도록 한다.
+
+```html
+<!-- list.erb -->
+
+<h1>지난 글 목록입니다.</h1>
+<h2><%= @every_post %></h2>
+```
+
+Q12. 서버를 켜고 테스트하기
+
++ 내가 쓴 글이 아니라 `<Post::ActiveRecord_Relation...>` 코드가 찍힐 것이다.
++ 모델 객체 전체가 찍힌 것이다.
+
+
+Q13. for문 쓰기 (보낸 메일 기록하기 (4))
+
+
+
+---
+
+## 09 멋사 4주차 6번
+
+### 보낸 메일 기록하기 (1)
+
+Q1. 워크스페이스 생성
+
++ `rails g controller home index`
+
+Q2. `application_controller` 보안 코드 주석 처리하기
+
++ `# protect_from_forgery ...`
+
+Q3. `/views/layouts` 레이아웃 application.html.erb에 Bootstrap CDN 인클루드하기
+
++ `<%= javascript_include_tag ...%>` 밑에 붙여넣기
++ 윗 줄에 있는 `...-turbolinks-...` 모두 `false`로 바꾸기
+
+> **Note:** turbolink 기능 때문에 버그 발생하는 경우가 더러 있기 때문에 false로 바꿔준다.
+
+Q4. form tag 코드 Bootstrap에서 복붙하기
+
+```html
+<form>
+  <div class="form-group">
+    <label for="exampleInputEmail1">Email address</label>
+    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+  </div>
+  <div class="form-group">
+    <label for="exampleInputPassword1">Password</label>
+    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+  </div>
+  <div class="form-group">
+    <label for="exampleInputFile">File input</label>
+    <input type="file" id="exampleInputFile">
+    <p class="help-block">Example block-level help text here.</p>
+  </div>
+  <div class="checkbox">
+    <label>
+      <input type="checkbox"> Check me out
+    </label>
+  </div>
+  <button type="submit" class="btn btn-default">Submit</button>
+</form>
+```
+
+Q5. form tag 수정하기
+
++ 전체 코드를 `<div class="container">...</div>`로 감싸주기
++ 위에 너무 붙기 때문에 margin 옵션 넣어주기
+    + `<div class="container" style="margin-top:50px;">`
++ 필요 없는 태그를 지우고, "제목", "내용"에 대한 `<input>` 태그를 만들어둔다.
++ 내용 태그는 Bootstrap textarea 검색해서 가져오기
+    + `<textarea class="form-control" rows="5" id="content"></textarea>`
+
++ "제목" 태그와 "내용" 태그에는 각각 `name="title"`, `name="content"`를 넣어준다.
++ `<form action="/write" method="POST">`
+
+```html
+<div class ="container">
+    <h1>게시판입니다.</h1>
+    <form action="/write" method="POST">
+      <div class="form-group">
+        <label for="title">글 제목</label>
+        <input name="title" type="text" class="form-control" id="title" placeholder="제목을 입력하세요.">
+      </div>
+      <div class="form-group">
+        <label for="content">글 내용</label>
+        <textarea name="content" class="form-control" rows="5" id="content" placeholder="내용을 입력하세요."></textarea>
+      </div>
+      <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+</div>
+```
+
+Q6. 라우트와 컨트롤러 파일 수정하기
+
++ `routes.rb` 파일에서 `post '/write' => 'home#write'` 추가하기
+
+```ruby
+Rails.application.routes.draw do
+  root 'home#index'
+  get 'home/index'
+  post '/write' => 'home#write'
+```
+
++ `home_controller.rb` 파일에서 write 함수 정의하기
+
+```ruby
+class HomeController < ApplicationController
+  def index
+  end
+
+  def write
+    @post_title = params[:title]
+    @post_content = params[:content]
+  end
+end
+```
+
+Q7. 함수 `write`에 대한 view 파일 만들기
+
++ `/views/home` - [New File] - write.erb
+
+```html
+<!-- write.erb -->
+
+<h1>글이 정상적으로 등록되었습니다.</h1>
+
+<h2>제목: </h2>
+<%= @post_title %>
+<h2>내용: </h2>
+<%= @post_content %>
+
+<hr>
+
+<a href="/">메인으로 가기</a>
+```
+
+**끝.**
 
 ---
 

@@ -5,9 +5,19 @@
 
 ---
 
-## 10 멋사 4주차 7번
+## 11 멋사 4주차 10, 11번
+
+### 삭제기능 구현하기
+
+### 수정기능 구현하기
+
+---
+
+## 10 멋사 4주차 7,8,9번
 
 ### 보낸 메일 기록하기 (2)~(4) ::: DB
+
+[실습 c9 링크](https://ide.c9.io/datalater/jt_secondboard)
 
 #### 모델에 대한 이론 설명
 
@@ -94,6 +104,8 @@ Rails.application.routes.draw do
 
 #### 모델 생성 및 마이그레이트
 
+참조: [공식문서](http://edgeguides.rubyonrails.org/active_record_migrations.html)
+
 Q6. 모델 생성하기
 
 + bash 창을 클릭한다.
@@ -116,8 +128,8 @@ class CreatePosts < ActiveRecord::Migration
   def change
     create_table :posts do |t|
 
-      t.string "title"
-      t.string "content"
+      t.string :title
+      t.string :content
 
       t.timestamps null: false
     end
@@ -129,12 +141,12 @@ end
     + `t.데이터타입 "저장할 내용의 변수 이름"`
     + `t.datatype "column_name"`
 + 예시
-    + t.string "title"
+    + t.string :title
     + t.integer "view_count" (조회수)
     + t.datetime "date"
     + t.float "eyesight"
 + DB 파일은 테이블로 구성되어 있는데, 위에 추가한 것들이 column을 구성하게 된다.
-    + 가령, `t.string "title"`과 `t.string "content"`에 의해서
+    + 가령, `t.string :title`과 `t.string :content`에 의해서
     + title 칼럼과 content 칼럼이 생성된다.
     + 칼럼 이름을 여기서 처음 짓는 것이다.
     + 컨트롤러의 변수(`post_title`) 또는 HTML 태그의 name(`title`)과 다르게 이름 지어도 상관없다.
@@ -244,9 +256,46 @@ Q12. 서버를 켜고 테스트하기
 + 모델 객체 전체가 찍힌 것이다.
 
 
-Q13. for문 쓰기 (보낸 메일 기록하기 (4))
+Q13. 모델 객체 순회하기 (보낸 메일 기록하기 (4))
 
++ `write.erb` 파일을 수정한다.
 
+```html
+<h1>지난 글 목록입니다.</h1>
+<% @every_post.each do |p| %>
+제목: <%= p.title %> <br>
+내용: <%= p.content %>
+<hr>
+<% end %>
+<p><a href="/">메인으로 가기</a></p>
+```
+
++ `@every_post`는 여러 글이 한꺼번에 담겨 있기 때문에 하나씩 빼줘야 한다.
++ 하나씩 순회할 때는 each 구문을 사용한다.
++ HTML 파일에서 ruby 신택스를 쓸 때, 출력해야 하면 `<%= %>`을 쓰고 출력할 필요가 없다면 `<% %>`를 쓴다고 생각해두자.
+
+Q14. 서버를 켜고 테스트하기
+
++ 만약 DB 관련 오류가 뜨는 것 같다면 다음 명령어를 차례대로 실행한다.
+
+```shell
+rake db:drop,    
+rake db:create,    
+rake db:migrate
+```
+
+Q15. 최신 포스트가 위에 오도록 정렬하기
+
+```ruby
+    def list
+      @every_post = Post.all.order("id desc")
+    end
+```
+
++ `order("id desc")` : id 내림차순 정렬
++ `order("id asc")` : id 오름차순 정렬
+
+**끝.**
 
 ---
 

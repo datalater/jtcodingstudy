@@ -7,9 +7,375 @@
 
 ## 11 멋사 4주차 10, 11번
 
-### 삭제기능 구현하기
+### 지난 시간 보강
 
-### 수정기능 구현하기
+Q1. Runserver 후 게시판에 글 써서 잘 되는지 테스트하기
+
+Q2. list.erb에 시간도 보여주기
+
+```html
+<h1>지난 글 목록입니다.</h1>
+<% @every_post.each do |p| %>
+제목: <%= p.title %> <br>
+내용: <%= p.content %> <br>
+시간: <%= p.created_at %>
+<hr>
+<% end %>
+<p><a href="/">메인으로 가기</a></p>
+```
+
++ `시간: <%= p.created_at %>` 추가
+
+### 삭제기능 구현하기 :: D of CRUD
+
+Q3. 게시판 리스트(list.erb)에 삭제 버튼 구현하기
+
+```html
+<h1>지난 글 목록입니다.</h1>
+<% @every_post.each do |p| %>
+제목: <%= p.title %> <br>
+내용: <%= p.content %> <br>
+시간: <%= p.created_at %>
+<a href="#">[삭제]</a>
+<hr>
+<% end %>
+<p><a href="/">메인으로 가기</a></p>
+```
+
++ `<a href="#">[삭제]</a>`: 삭제 버튼은 링크로 만든다.
++ 여기서 `"#"`은 링크를 제대로 구현하기 전에 임시로 채워두는 용도이다.
+    + 웹에서 `"#"`은 빈 깡통과 마찬가지이다.
+
++ 서버 페이지를 새로고침(F5)한 후 각 글에 삭제 버튼이 구현되어 있음을 확인한다.
+
+Q4. 이제 엄청나게 쉬운 삭제 기능을 구현하자.
+
+```html
+<h1>지난 글 목록입니다.</h1>
+<% @every_post.each do |p| %>
+제목: <%= p.title %> <br>
+내용: <%= p.content %> <br>
+시간: <%= p.created_at %>
+<a href="/destroy">[삭제]</a>
+<hr>
+<% end %>
+<p><a href="/">메인으로 가기</a></p>
+```
+
++ 삭제 버튼의 href를 `"/destroy"`로 바꿔준다. (delete로 해도 상관없으나 rails 공식 문서에서 destory 권장)
++ 삭제 버튼을 눌러보면 url 연결이 안되어 있다는 오류 메시지가 뜬다.
++ 여기서 삭제 버튼을 만들 때 중요한 점이 있는데, 어떤 글을 삭제해야 하는지 알려줘야 한다는 것이다.
++ 가령 `https://jt-secondboard-datalater.c9users.io/destroy/5`처럼 몇 번 글인지 알려줘야 한다.
+
+> **Note:** 오타 조심 : destroy vs. destory | 굉장히 많이 발견되는 오타이니 주의하자!
+
+Q5. DB에 저장되는 모든 데이터는 id를 가지고 있다.
+
+```ruby
+class CreatePosts < ActiveRecord::Migration
+  def change
+    create_table :posts do |t|
+
+      t.string :title
+      t.string :content
+
+      t.timestamps null: false
+    end
+  end
+end
+```
+
++ 위에서 볼 수 있듯이 우리가 DB를 마이그레이트할 때는 title과 content만 작성했지만, 데이터를 추가할 때마다 rails에서 기본적으로 id를 자동 저장해준다.
++ 각 post의 칼럼은 p.title 또는 p.content처럼 접근하면 된다.
++ 따라서 각 post의 id칼럼은 p.id로 접근하면 된다.
+
+Q6. 삭제 링크의 href에 포스트의 id를 추가해주자.
+
+```html
+<h1>지난 글 목록입니다.</h1>
+<% @every_post.each do |p| %>
+제목: <%= p.title %> <br>
+내용: <%= p.content %> <br>
+시간: <%= p.created_at %>
+<a href="/destroy/<%= p.id %>">[삭제]</a>
+<hr>
+<% end %>
+<p><a href="/">메인으로 가기</a></p>
+```
+
++ 되는지 테스트해보자.
++ url을 연결하지 않았으니 오류메시지가 뜨겠지만, 브라우저 url에 `https://jt-secondboard-datalater.c9users.io/destroy/4`처럼 id가 뜨면 포스트의 id가 잘 연결된 것이다.
++ `"/destroy/<%= p.id %>"`
+    + `<%= p.id %>`: <%= %> 안에 있는 객체(`p.id`)를 출력하는 ruby 태그
+
+Q7. routes.rb에서 url을 연결해주자.
+
+```ruby
+Rails.application.routes.draw do
+  root 'home#index'
+  get 'home/index'
+  post '/write' => 'home#write'
+  get 'list' => 'home#list'
+  get 'destroy/:post_id' => 'home#destroy'
+```
+
++ `/destroy/:post_id`와 같은 주소로 들어오는 url은 home 컨트롤러의 destory 함수가 처리하도록 한다.
++ `destroy/:post_id`란 무엇인가
+    + (1) `destory/post_id` : destroy 뒤에 post_id라는 문자열이 정확히 와야한다.
+    + (2) `destroy/:post_id` : destroy 뒤에 무엇이 와도 상관없다. 그리고 destroy 뒤에 오는 값을 `post_id`라는 변수에 저장한다.
++ `get 'destroy/:post_id' => 'home#destroy'`:
+    + (1) destroy 뒤에 어떤 값이 오면 그 값을 `post_id`라는 변수에 저장하고
+    + (2) home 컨트롤러의 destroy 함수에 그 변수를 넘긴다.
+    + (3) home 컨트롤러의 destroy 함수를 실행한다.
+
+Q8. home 컨트롤러에서 destroy 함수를 만든다.
+
+```ruby
+class HomeController < ApplicationController
+  def index
+  end
+
+  def write
+
+    new_post = Post.new
+    new_post.title = params[:title]
+    new_post.content = params[:content]
+    new_post.save
+
+    redirect_to "/list"
+  end
+
+  def list
+    @every_post = Post.all.order("id desc")
+  end
+
+  def destroy
+    @one_post = Post.find(params[:post_id])
+    @one_post.destroy
+    redirect_to "/list"
+  end
+end
+```
+
++ `@one_post = Post.find(params[:post_id])`
+    + (1) `params[:post_id]`: post_id라는 변수에 저장된 값(ex. 4)을 불러온다.
+    + (2) `Post.find(4)` : id가 4인 글을 찾아라.
++ `@one_post.destroy` : `@one_post`를 삭제한다.
++ `redirect_to "/list"` : 삭제한 이후에 `/list` 페이지로 redirect한다.
++ 잘 되는지 테스트하기 위해 서버 페이지를 refresh하고 삭제 버튼을 눌러본다.
++ 삭제한 이후에는 몇 개의 글을 더 써두자.
+
+**끝.**
+
+---
+
+### 수정기능 구현하기 :: U of CRUD
+
+Q1. update는 함수가 2개 필요하다.
+
++ update_view : 수정을 하러 갈 페이지
++ update : 실제로 수정이 이루어지는 페이지
+
+Q2. home 컨트롤러에 update_view 함수를 만들자.
+
+```ruby
+class HomeController < ApplicationController
+  def index
+  end
+
+  def write
+
+    new_post = Post.new
+    new_post.title = params[:title]
+    new_post.content = params[:content]
+    new_post.save
+
+    redirect_to "/list"
+  end
+
+  def list
+    @every_post = Post.all.order("id desc")
+  end
+
+  def update_view
+
+  end
+
+  def destroy
+    @one_post = Post.find(params[:post_id])
+    @one_post.destroy
+    redirect_to "/list"
+  end
+end
+```
+
+Q3. 함수를 만들었으니 view 파일을 만들고 내용을 채워주자.
+
++ `views/home/` - [New File] - update_view.erb
+
+```html
+# update_view.erb
+
+<h5>여기는 수정하는 페이지입니다.</h5>
+```
+
+Q4. 곧 만들 수정 버튼에 대한 url로 연결하기 위해 routes.erb 수정한다.
+
+```ruby
+Rails.application.routes.draw do
+  root 'home#index'
+  get 'home/index'
+  post '/write' => 'home#write'
+  get 'list' => 'home#list'
+  get 'destroy/:post_id' => 'home#destroy'
+  get 'update_view/:post_id' => 'home#update_view'
+```
+
++ 삭제와 마찬가지로 어떤 글을 수정해야 할지 알아야 하므로 `/:post_id`라고 써줘야 한다.
+
+Q5. list 페이지에 수정 버튼을 만들자.
+
+```html
+<h1>지난 글 목록입니다.</h1>
+<% @every_post.each do |p| %>
+제목: <%= p.title %> <br>
+내용: <%= p.content %> <br>
+시간: <%= p.created_at %>
+<a href="/update_view/<%= p.id %>">[수정]</a>
+<a href="/destroy/<%= p.id %>">[삭제]</a>
+<hr>
+<% end %>
+<p><a href="/">메인으로 가기</a></p>
+```
+
++ 삭제 버튼 만들듯이 만들면 된다.
++ 서버 페이지를 refresh하여 수정버튼이 있는지 확인한다.
++ 수정 버튼을 눌러서 `update_view.erb` 파일의 내용이 뜨는지 확인한다.
+
+Q6. 수정하는 페이지는 글쓰기 페이지를 거의 그대로 본따서 만들면 된다.
+
+```html
+<h5>여기는 수정하는 페이지입니다.</h5>
+
+<div class ="container">
+    <h1>Private Board</h1>
+    <form action="/write" method="POST">
+      <div class="form-group">
+        <label for="title_label">글 제목</label>
+        <input name="title" type="text" class="form-control" id="title" placeholder="제목을 입력하세요.">
+      </div>
+      <div class="form-group">
+        <label for="content_label">글 내용</label>
+        <textarea name="content" class="form-control" rows="5" id="content" placeholder="내용을 입력하세요."></textarea>
+      </div>
+      <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+</div>
+```
+
++ `index.html.erb` 파일에 있는 코드를 그대로 붙여넣었다.
++ 서버 페이지를 refresh하여 확인해본다.
++ 수정하기 페이지이므로 제목과 내용에 수정할 게시글의 제목과 내용을 보여줘야 한다.
+
+Q7. 수정할 post의 내용을 보여주기 위해 update_view 함수에 변수를 만든다.
+
+```ruby
+def update_view
+  @one_post = Post.find(params[:post_id])
+end
+```
+
++ `@one_post = Post.find(params[:post_id])`: 이 코드 하나로 수정할 게시글의 모든 내용을 `@one_post`에 담게 되었다.
++ 그리고 골뱅이가 있는 변수는 view에서 마음껏 쓸 수 있다!
++ 이제 수정하기 view 페이지에 제목과 내용을 보여줄 수 있다!
+
+Q8. update_view 파일에 함수에서 저장한 변수를 출력해주자.
+
+```html
+<h5>여기는 수정하는 페이지입니다.</h5>
+
+<div class ="container">
+    <h1>Private Board</h1>
+    <form action="/write" method="POST">
+      <div class="form-group">
+        <label for="title_label">글 제목</label>
+        <input value="<%= @one_post.title %>" name="title" type="text" class="form-control" id="title" placeholder="제목을 입력하세요.">
+      </div>
+      <div class="form-group">
+        <label for="content_label">글 내용</label>
+        <textarea name="content" class="form-control" rows="5" id="content" placeholder="내용을 입력하세요."><%= @one_post.content %></textarea>
+      </div>
+      <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+</div>
+```
+
++ `value="<%= @one_post.title %>"`:
+    + 글 제목에 해당하는 `<input>` 태그의 빈 칸에 값을 채워 넣으려면 value 옵션을 써야 한다.
++ `<%= @one_post.content %>`:
+    + 글 내용에 해당하는 `<textarea>` 태그의 경우 value 옵션이 아니라 여는 태그와 닫는 태그 사이에 그 값을 넣어줘야 한다.
++ 이제 수정하기 페이지에서 전송을 눌렀을 때 실제로 수정하는 기능만 만들면 된다.
+
+Q9. update_view 파일에서 form 태그의 action을 수정해주자.
+
+```html
+    <form action="/update/<%= @one_post.id %>" method="POST">
+```
+
++ 기존 `/write`에서 `/update`로 바꿨다.
++ 그리고 해당 게시물의 id를 명시해야 한다.
++ 지금 update_view는 어떤 게시물을 수정하고 있었는지 기억나는가?
++ 기억나지 않는다면 home 컨트롤러에 가서 update_view 함수를 살펴보자.
++ `@one_post`였다!
++ 따라서 `@one_post`의 id를 써주면 된다.
++ 그래서 `/<%= @one_post.id %>`을 써줬다. (destroy 기능을 만들 때도 같은 방식으로 했었다)
++ 이렇게 url을 새로 정의했으니 routes.erb 파일을 수정하러 가자.
+
+Q10. routes.erb 파일에서 `/update`를 연결하자.
+
+```ruby
+Rails.application.routes.draw do
+  root 'home#index'
+  get 'home/index'
+  post '/write' => 'home#write'
+  get 'list' => 'home#list'
+  get 'destroy/:post_id' => 'home#destroy'
+  get 'update_view/:post_id' => 'home#update_view'
+  post 'update/:post_id' => 'home#update'
+```
+
++ `update` url은 post 방식임을 주의하자.
++ 역시 `update` 뒤에 오는 값을 저장하기 위해 `/:post_id`를 명시해야 한다.
++ 이제 home 컨트롤러의 update 함수를 만들자.
+
+
+Q11. home 컨트롤러에 update 함수를 만들자.
+
+```ruby
+def update
+  @one_post = Post.find(params[:post_id])
+
+  @one_post.title = params[:title]
+  @one_post.content = params[:content]
+  @one_post.save
+
+  redirect_to "/list"
+end
+```
+
++ 먼저 수정할 post를 가져오기 위해 url에서 전달된 `:post_id` 변수를 통해 post를 찾는다.
++ 수정하기 페이지에서 새롭게 작성한 글 제목을 `params[:title]`을 통해 가져오고 그것을 `@one_post`의 title로 저장한다.
++ content도 마찬가지다.
++ 새롭게 가져왔으니 바뀐 내용을 유지하기 위해 `@one_post`를 저장한다.
++ 수정이 완료되면 `/list` 페이지로 redirect 한다.
+
+> **Note:** update 코드를 잘 살펴보면 params[:title]과 params[:content]는 CRUD의 C와 거의 같다. 다만, C에서는 Post.new로 새로운 데이터를 만들고 시작했다는 점이 다를 뿐이다.
+
+Q12. 수정 버튼을 눌러서 글 내용이나 제목을 바꾼 후 전송 버튼을 눌러 테스트 해보자.
+
++ 잘 나올 것이다.
+
+**끝.**
 
 ---
 
@@ -560,8 +926,8 @@ Q6. form 태그 수정하기
 Q6-1. form 태그 수정하기 2
 
 + 글 제목과 글 내용 태그 각각에 name 옵션을 넣어준다.
-+ `<input name="title>"`
-+ `<textarea name="content>"`
++ `<input name="title">`
++ `<textarea name="content">`
 
 > **Note:** name은 원래 기본적으로 설정해야 할 뿐만 아니라, GET 방식으로 테스트할 때 URL의 변화를 보려면 name을 설정해야 한다.
 

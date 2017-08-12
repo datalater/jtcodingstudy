@@ -5,9 +5,428 @@
 
 ---
 
+### 13 멋사 6주차
+
+### 1:N 관계 (이론)
+
+Q1. Post와 Comment는 1:N 관계이다.
+
++ 게시글을 의미하는 Post와 댓글을 뜻하는 Comment는 데이터를 저장하는 모델이다.
++ 1개의 Post는 N개의 Comment를 가진다.
++ 이렇게 맺어지는 모델들의 관계를 1:N 관계라고 한다.
+
+Q2. 이러한 관계를 맺는 모델들은 또 무엇이 있을까?
+
++ Question and Answers!
++ 하나의 질문에는 여러 개의 답변이 달릴 수 있다.
++ 각 답변은 하나의 질문에만 속한다.
+
+Q3. 웹서비스 관점에서 1:N 관계를 URL로 생각해보자.
+
++ 사용자가 질문 게시판에 들어왔다.
++ 303번째 질문을 클릭한다.
++ url `dummy.com/question/303`으로 연결된다.
++ url을 전달받은 controller가 303번째 질문과 거기에 속해 있는 답변들을 불러온다.
++ 303번째 질문에 속한 답변은 다른 질문에서는 불러오지 않는다.
+
+> **Note:** N:N 관계도 있다. 대표적으로 Post와 Tag(태그)
+
+### 1:N 관계 (실습)
+
+Q1. 설계를 미리 짜둔다.
+
+```ruby
+1. 댓글을 만들 것이다.
+2. 게시글:댓글의 관계를 생각해본다.
+3. 1:N 이어야 한다.
+4. 게시글 하나가 여러 개의 댓글을 갖고 있다.
+5. 댓글을 생성할 때 그 댓글이 어떤 게시글에 속하는지 알아야 한다.
+    - 댓글에 대한 정보 (content, created_at)
+    - 게시글에 대한 정보 (게시글의 id)
+```
+
+Q2. 댓글에 대한 모델을 만든다.
+
+```bash
+rails g model comment conent:string
+```
+
+
+---
+
+## 13 멋사 6주차 1번 +Plus
+
+[실습코드](https://ide.c9.io/datalater/jt_board_review-2)
+
+### CR 기능을 가진 게시판 꾸미기 (1)
+
+```
+꾸미기 (1)에 빠진 것 (기능 포함)
+1. Navigation bar
+2. copyright
+3. responsive web
+4. tag
+5. 하이퍼링크
+6. 타임라인 외에 썸네일 리스트 뷰 (ex. `https://getbootstrap.com/docs/3.3/examples/offcanvas/`)
+```
+
+Q1. 모델 내 데이터 삭제 후 다시 마이그레이트하기
+
++ 기존에 작성한 데이터는 어차피 임시 데이터므로 모델을 삭제하고 다시 migrate해준다.
+
+```bash
+rake db:drop
+rake db:migrate
+```
+
++ 꾸미기 테스트를 위해 글을 3개 정도 써둔다.
+
+Q2. 타임라인 게시판이므로 최근 글이 위에 오도록 정렬해준다.
+
++ home 컨트롤러에서 index 함수의 코드를 수정한다.
+
+```ruby
+def index
+  @posts = Post.all.order("id desc")
+end
+```
+
+Q3. 시간, 제목, 내용을 html `<p>` 태그로 감싸준다.
+
++ 그래야 꾸미기가 수월해진다.
+
+```html
+<% @posts.each do |p| %>
+  <p><%= p.created_at.in_time_zone("Asia/Seoul").strftime("%Y.%m.%d (%a) %H:%M") %></p>
+  <p><%= p.title %></p>
+  <p><%= p.content %></p>
+<% end %>
+```
+
+Q4. 시간을 국내 기준으로 바꾼다.
+
++ index.html.erb 파일로 가서 created_at 코드를 바꾼다.
+
+```html
+<% @posts.each do |p| %>
+  <%= p.created_at.in_time_zone("Asia/Seoul").strftime("%Y.%m.%d (%a) %H:%M") %></br>
+  <%= p.title %></br>
+  <%= p.content %></br>
+<% end %>
+```
+
+Q4-1. 시간을 회색으로 표시한다.
+
+```html
+<% @posts.each do |p| %>
+  <p style="color:grey"><%= p.created_at.in_time_zone("Asia/Seoul").strftime("%Y.%m.%d (%a) %H:%M") %></p>
+  <p><%= p.title %></p>
+  <p><%= p.content %></p>
+<% end %>
+```
+
+Q5. 제목(title)은 진하게 표시해준다.
+
+```html
+<% @posts.each do |p| %>
+  <p style="color:grey"><%= p.created_at.in_time_zone("Asia/Seoul").strftime("%Y.%m.%d (%a) %H:%M") %></p>
+  <p style="font-weight:bold"><%= p.title %></p>
+  <p><%= p.content %></p>
+<% end %>
+```
+
+Q6. bootstrap을 활용하여 게시물에 background 추가하기
+
+```html
+<% @posts.each do |p| %>
+  <div class="well">
+    <p style="color:grey"><%= p.created_at.in_time_zone("Asia/Seoul").strftime("%Y.%m.%d (%a) %H:%M") %></p>
+    <p style="font-weight:bold"><%= p.title %></p>
+    <p><%= p.content %></p>
+  </div>
+<% end %>
+```
+
+Q7. submit 버튼 컬러 바꾸기
+
+```html
+<button type="submit" class="btn btn-primary">Submit</button>
+```
+
++ `class="btn btn-default"`를 위와 같이 바꿨다.
+
+**끝.**
+
+---
+
+## 12 멋사 6주차 1번
+
+### CRUD 복습 (run through)
+
+Q1. CRUD를 복습해보자. 예전보다 빠르게, 예전과는 다르게.
+
+#### Model
+
+Q2. 모델 생성할 때 칼럼의 type까지 한번에 지정하기
+
++ bash 창에 모델을 생성하는 명령어를 입력한다.
+
+```bash
+rails g model post title:string content:text
+
+# 이전
+rails g model post
+```
+
+> **Note:** 모델을 삭제하는 명령어는 `rails d model post`
+
+Q3. 모델을 생성하여 마이그레이션 파일이 생겼으니 마이그레이트 해준다.
+
+```bash
+rake db:migrate
+```
+
+#### controller
+
+Q4. 컨트롤러를 생성해준다.
+
+```bash
+rails g controller home index create update_view update destroy
+```
+
++ controllers 폴더에 각 함수와 view폴더의 각 view 파일이 생긴 것을 확인한다.
++ 단축키 `ctrl+e`를 눌러서 routes.rb를 검색하여 enter치고 들어간다.
++ routes.rb 파일에 라우팅도 설정되어 있음을 확인한다.
+
+Q5. root 주소에 대한 라우팅을 설정하고 각 함수의 get/post 방식을 점검한다.
+
++ root 주소 url을 home의 index 함수로 연결하기
+
+```ruby
+root 'home#index'
+```
+
++ create와 update는 post로 바꿔준다.
+
+```ruby
+post 'board/create'
+post 'board/update'
+```
+
+Q5-1. route 설정을 bash 창에서 확인하는 방법
+
+```bash
+rake routes
+```
+
+Q6. 컨트롤러의 index 함수에 기능에 맞게 코드를 넣어준다.
+
++ index 함수는 저장된 Post를 보여주는 역할을 할 것이다 (이전 실습 때 list 역할).
+
+```ruby
+class HomeController < ApplicationController
+  def index
+    @posts = Post.all
+  end
+
+  def create
+  end
+
+  def update_view
+  end
+
+  def update
+  end
+
+  def destroy
+  end
+end
+```
+
+Q7. index.html.erb 뷰 파일 코드를 수정한다.
+
++ 우선 웹에서 indentation은 보통 2칸으로 하므로 수정해준다. (우측 하단 bash창 위에 있음)
+
+```html
+<% @posts.each do |p| %>
+  <%= p.title %></br>
+  <%= p.content %></br>
+  <%= p.created_at %></br>
+<% end %>
+```
+
++ 위 코드에 의해 Post 모델에 있는 모든 게시글을 보여주는 코드를 짰다.
++ 이제 위 코드 위에 form 태그를 쓸 것이다.
++ 그 전에 bootstrap을 연결하자.
+
+Q8. bootstrap CDN을 layout에 추가하기
+
+```html
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+```
+
++ 단축키 `ctrl+e` layout 검색, enter치고 들어가기
++ csrf 밑에 넣어주기
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Workspace</title>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= csrf_meta_tags %>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<%= yield %>
+
+</body>
+</html>
+```
+
+Q9. bootstrap의 form 태그를 복사하여 indx.html.erb에 붙여넣기
+
++ 이제 bootstrap의 form 태그 코드를 복사한다.
+
+```html
+<div class ="container">
+    <h1><strong>Private Board</strong></h1>
+    <form action="/write" method="POST">
+      <div class="form-group">
+        <label for="title">글 제목</label>
+        <input name="title" type="text" class="form-control" id="title" placeholder="제목을 입력하세요.">
+      </div>
+      <div class="form-group">
+        <label for="content">글 내용</label>
+        <textarea name="content" class="form-control" rows="5" id="content" placeholder="내용을 입력하세요."></textarea>
+      </div>
+      <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+</div>
+```
+
++ index.html.erb에 붙여넣는다.
+
+```html
+<div class ="container" style="margin-top:30px">
+  <h1><strong>Private Board</strong></h1>
+  <form action="/home/create" method="POST">
+    <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+    <div class="form-group">
+      <label for="title">글 제목</label>
+      <input name="title" type="text" class="form-control" id="title" placeholder="제목을 입력하세요.">
+    </div>
+    <div class="form-group">
+      <label for="content">글 내용</label>
+      <textarea rows="8" name="content" class="form-control" rows="5" id="content" placeholder="내용을 입력하세요."></textarea>
+    </div>
+    <button type="submit" class="btn btn-default">Submit</button>
+  </form>
+
+  <hr>
+
+  <% @posts.each do |p| %>
+    <%= p.title %></br>
+    <%= p.content %></br>
+    <%= p.created_at %></br>
+  <% end %>
+</div>
+```
+
++ (1) 여기서 `<div class ="container">`는 페이지 내 전체 코드를 감싸주도록 처음과 끝에 배치했음을 주의한다.
++ (2) `<div class ="container">`에 `style="margin-top:30px"`를 넣어서 위쪽 margin을 추가했음을 주의한다.
++ (3) `<textarea rows="8" ...>`에 `rows="8"`을 넣어서 content의 크기를 8줄로 기본 설정했음을 주의한다.
++ (4) form 태그와 이미 작성된 게시글을 분리하기 위해 `<hr>` 태그를 썼음을 주의한다.
++ 서버를 run하고 브라우저에서 직접 확인해본다.
+
+Q10. form 태그의 action 설정하기
+
++ 글을 쓰는 함수가 create였으므로 다음과 같이 설정한다.
+
+```html
+    <form action="/create" method="POST">
+```
+
++ 글을 작성하여 submit 눌러본다.
++ toek 오류가 발생한다.
++ 전에는 controller 폴더의 application_controller.rb 파일에서 protect로 시작하는 라인을 주석처리를 했었다.
+
+```ruby
+class ApplicationController < ActionController::Base
+  # Prevent CSRF attacks by raising an exception.
+  # For APIs, you may want to use :null_session instead.
+  # protect_from_forgery with: :exception
+end
+```
+
++ 그러나 아래처럼 하면 해결된다.
+
+```html
+<form action="/home/create" method="POST">
+  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+```
+
++ 위와 같이 `<%= hidden_field_tag :authenticity_token, form_authenticity_token %>`를 form 태그 바로 아래에 추가한다.
++ 서버를 다시 켜고 글을 작성하여 submit 해보면 정상적으로 view 파일이 뜨는 것을 확인할 수 있다.
+
+Q11. create 함수의 기능에 맞게 코드를 작성한다.
+
++ create 함수는 작성된 글을 model에 추가하는 것이다.
+
+```ruby
+def create
+  @post = Post.new(title: params[:title], content: params[:content])
+  @post.save
+  redirect_to "/home/index"
+end
+```
++ 이전 코드는 다음과 같다.
+
+```ruby
+def write
+
+  new_post = Post.new
+  new_post.title = params[:title]
+  new_post.content = params[:content]
+  new_post.save
+
+  redirect_to "/list"
+end
+```
+
++ 즉 비교를 해보면, params 관련 코드를 한 줄에 썼음을 알 수 있다.
++ 그러나 굳이 한 줄에 다 때려 넣을 필요는 없다. 초보자의 이해를 돕기 위해서는 의미를 세분화하여 여러 줄로 나누는 것이 가독성도 좋고 배우기에도 좋다.
+
+> **Note:** `redirect_to "/home/index"` 대신에 `redirect_to :back`으로 써도 된다.
+
+Q11. 지금까지 Create와 Read 기능을 완성했다. 나머지 U와 D는?
+
++ 그건 별다른 내용이 없으므로 이전 코드를 상황에 맞게 잘 변형하여 따라해보면 된다.
++ 나중에 다룰 수도 있긴 한데, 일단 넘어간다.
+
+**끝.**
+
+---
+
 ## 11 멋사 4주차 10, 11번
 
-### 지난 시간 보강
+### 지난 시간 보강 (created_at)
 
 Q1. Runserver 후 게시판에 글 써서 잘 되는지 테스트하기
 

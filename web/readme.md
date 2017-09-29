@@ -5,7 +5,7 @@
 
 ---
 
-### 13 멋사 6주차
+### 13 멋사 6주차 (~54)
 
 ### 1:N 관계 (이론)
 
@@ -33,6 +33,8 @@ Q3. 웹서비스 관점에서 1:N 관계를 URL로 생각해보자.
 
 ### 1:N 관계 (실습)
 
+[실습코드 c9 jt_board_review-2 링크](https://ide.c9.io/datalater/jt_board_review-2)
+
 Q1. 설계를 미리 짜둔다.
 
 ```ruby
@@ -47,10 +49,181 @@ Q1. 설계를 미리 짜둔다.
 
 Q2. 댓글에 대한 모델을 만든다.
 
++ 댓글, 즉 comment에 대한 모델은 어떤 칼럼이 필요할까?
++ 댓글의 내용 content와 댓글이 속해야 하는 게시물의 아이디인 post_id가 필요하다.
+
 ```bash
-rails g model comment conent:string
+rails g model comment content:string post_id:integer
 ```
 
++ `db/migrate/...comments.rb` 마이그레이션 파일을 클릭해서
++ content와 post_id가 입력되어 있음을 확인한다.
+
+Q3. 댓글 모델의 마이그레이션 파일을 마이그레이트 한다.
+
+```bash
+rake db:migrate
+```
+
++ `models` 폴더에 `comment.rb` 파일이 생겼음을 확인한다.
+
+Q4. 댓글에 대한 route를 설정한다.
+
++ `ctrl+E` - `routes` 입력 - enter
+
+```ruby
+post 'home/:post_id/comment_create' => 'home#comment_create'
+```
+
++ 댓글을 생성할 때 url에 해당 게시물의 id를 넘긴다.
+
+Q5. comment_create 대한 컨트롤러 함수를 만든다.
+
++ `controller.rb` 파일로 이동
+
+```ruby
+def comment_create
+  @comment = Comment.new(post_id: params[:post_id], content: params[:content])
+  @comment.save
+  redirect_to :back
+end
+```
+
++ `Comment.new` : Comment 모델의 instance를 새로 만든다.
++ `post_id: params[:post_id]` : Comment 모델의 칼럼 중 post_id 칼럼에는 post_id라는 name을 가진 태그의 내용을 집어 넣는다.
+
+Q6. index.html에 가서 댓글에 대한 view를 작성한다.
+
++ 게시글(=post) 각각 마다 댓글이 있어야 하므로, 게시글을 내뱉는 반복문 안에 댓글에 대한 view를 작성한다.
+
+```html
+<% @posts.each do |p| %>
+  <div class="well">
+    <p style="color:grey"><%= p.created_at.in_time_zone("Asia/Seoul").strftime("%Y.%m.%d (%a) %H:%M") %></p>
+    <p style="font-weight:bold"><%= p.title %></p>
+    <p><%= p.content %></p>
+    <!-- <form action='/home/<%=p.id%>/comment_create' method="POST">
+      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+      <div class="form-group">
+        <label for="content">댓글</label>
+        <textarea name="content" class="form-control" rows="5" id="content" placeholder="내용"></textarea>
+      </div>
+      <button type="submit" class="btn btn-info">reply</button>
+    </form> -->
+  </div>
+<% end %>
+```
+
+```html
+<% @posts.each do |p| %>
+  <div class="well">
+    <p style="color:grey"><%= p.created_at.in_time_zone("Asia/Seoul").strftime("%Y.%m.%d (%a) %H:%M") %></p>
+    <p style="font-weight:bold"><%= p.title %></p>
+    <p><%= p.content %></p>
+    <form action='/home/<%=p.id%>/comment_create' method="POST">
+      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+      <div class="form-group">
+        <label for="content">댓글</label>
+        <textarea name="content" class="form-control" rows="5" id="content" placeholder="내용"></textarea>
+      </div>
+      <button type="submit" class="btn btn-info">reply</button>
+    </form>
+  </div>
+<% end %>
+```
+
++ `<form action='/home/<%=post.id%>/comment_create' method='POST'>` : form 태그의 submit 버튼을 누르면 form 태그의 내용을 갖고 있는 상태에서 url `/home/<%=post.id%>/comment_create`로 POST 방식으로 처리한다.
++ 댓글 쓰는 태그와 버튼 태그는 이전에 쓴 코드를 그대로 베껴온다.
++ 단, '글 내용' => '댓글', 'btn-primary' => 'btn-info' 등으로 바꿈
++ Run Project로 서버를 실행하고 웹페이지를 살펴본다.
++ 댓글을 입력해서 버튼을 눌러보면 뭔가 샥샥 반응이 있는데 정작 댓글이 써지지는 않음을 확인한다. (3개 정도 입력해둔다)
+
+```html
+<% @posts.each do |p| %>
+  <div class="well">
+    <p style="color:grey"><%= p.created_at.in_time_zone("Asia/Seoul").strftime("%Y.%m.%d (%a) %H:%M") %></p>
+    <p style="font-weight:bold"><%= p.title %></p>
+    <p><%= p.content %></p><br><br>
+    <hr style="border-top: dashed 1px #C8C8C8;" />
+
+    <form action='/home/<%=p.id%>/comment_create' method="POST">
+      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+      <div class="form-group">
+        <label for="content">댓글</label>
+        <textarea name="content" class="form-control" rows="5" id="content" placeholder="내용"></textarea>
+      </div>
+      <button type="submit" class="btn btn-info">reply</button>
+    </form>
+  </div>
+<% end %>
+```
+
++ 댓글과 게시물의 내용을 구분하기 위해 `<br><br>` 태그와 `<hr>` 태그를 넣어준다.
+
+Q7. 모델을 완성했으니 모델 간의 관계 설정을 해준다.
+
++ `models/post.rb` 파일로 이동
+
+```ruby
+class Post < ActiveRecord::Base
+    has_many :comments
+end
+```
+
++ 단수 복수에 주의한다.
+
++ `models/comment.rb`파일로 이동
+
+```ruby
+class Comment < ActiveRecord::Base
+    belongs_to :post
+end
+```
+
++ 즉, 모델 Post와 모델 Comment의 관계 1:N은 프로그래밍에서 다음과 같이 정의된다.
++ 한 개의 Post 모델은 여러 개의 Comment 모델을 가질 수 있고, 한 개의 Comment 모델은 한 개의 Post 모델에 속한다.
+
+Q8. 모델 간의 관계가 설정되었으니 각 Post가 자신에게 속한 Comment를 불러올 수 있도록 만든다.
+
+```html
+<% @posts.each do |p| %>
+  <div class="well">
+    <p style="color:grey"><%= p.created_at.in_time_zone("Asia/Seoul").strftime("%Y.%m.%d (%a) %H:%M") %></p>
+    <p style="font-weight:bold"><%= p.title %></p>
+    <p><%= p.content %></p><br><br>
+    <hr style="border-top: dashed 1px #C8C8C8;" />
+
+    <% p.comments.each do |c| %>
+      <%= c.content %>
+    <%end%>
+
+    <form action='/home/<%=p.id%>/comment_create' method="POST">
+      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+      <div class="form-group">
+        <label for="content">댓글</label>
+        <textarea name="content" class="form-control" rows="5" id="content" placeholder="내용"></textarea>
+      </div>
+      <button type="submit" class="btn btn-info">reply</button>
+    </form>
+  </div>
+<% end %>
+```
+
++ `p.comments` : post 모델의 각 instance를 뜻하는 p에 여러 개의 comments가 딸려 있음을 뜻한다.
++ 웹페이지 확인해본다.
++ 나이스하게 꾸미려면 아래와 같이 코드를 수정한다.
+
+```html
+<% p.comments.each do |c| %>
+  <p>┖ <%= c.content %>
+    <span style="font-size:80%; color:grey">| <%= c.created_at.in_time_zone("Asia/Seoul").strftime("%Y.%m.%d. %H:%M") %></span>
+  </p>
+<%end%>
+```
+
++ 웹페이지에서 직접 댓글을 달아본다.
+
+**끝.**
 
 ---
 

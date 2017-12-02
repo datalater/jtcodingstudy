@@ -5,7 +5,116 @@
 
 ---
 
-### 13 멋사 6주차 (~54)
+## 14 Heroku deploy
+
+`devcenter.heroku.com/articles/getting-started-with-rails4`
+
+작업한 코드를 서버에 배포하는 것을 deploy라고 한다.
+
+Q1. Heroku 가입
+
+Q2. c9 접속 후 bash 창에서 명령어 입력하여 헤로쿠 로그인
+
+```
+heroku login
+```
+
+Q3. workspace 폴더 트리에 있는 Gemfile에 코드 추가
+
++ Gemfile 더블클릭
+
+```ruby
+gem 'sqlite3'
+gem 'pg'        # added
+```
+
++ 서비스 공급자가 허용하는 데이터베이스가 다 다름. c9에서는 sqlite3를 사용하고 heroku에서는 pg를 사용한다. 그래서 우리는 둘 다 써야 한다.
+
+```ruby
+gem 'sqlite3', :group => :development
+gem 'pg',      :group => :production
+```
+
++ 개발 모드에서는 sqlite3를 쓰고 프로덕션(배포) 모드에서는 pg를 쓴다.
+
+> **Note**:개발 모드에서는 에러 메시지가 찍히고 프로덕션 모드에서는 에러 메시지가 안 찍힌다. 왜냐하면 에러 메시지가 찍히면 해커들이 해킹하기에 굉장히 쉬워지기 때문이다. 헤로쿠는 실제로 서비스를 사용할 때 쓰는 것이므로 에러 메시지가 안 나오는 프로덕션 모드로 한다.
+
++ gem 파일을 수정한 다음 해당 프로젝트 파일에 사용하려면 무조건 다시 인스톨해야 한다.
+
+```bash
+bundle install
+```
+
+Q4. `config/database.yml` 코드 수정
+
+```ruby
+production:
+  <<: *default
+  adapter: postgresql
+  encoding: unicode
+```
+
++ 프로덕션 모드에서는 default값을 받지만 실제로는 postgresql(=pg)을 쓸 거다.
+
+Q5. Heroku 젬 추가
+
++ Gemfile 수정
+
+```ruby
+gem 'rails_12factor', group: :production
+```
+
++ `:`과 `=>`는 ruby 문법인데 어떻게 쓰든 같이 동작한다. 버전이 달라지면서 문법 적는 방법이 달라졌다. 아래가 더 최신 버전이긴 함.
+
++ Gemfile 인스톨
+
+```bash
+bundle install
+```
+
+Q6. git 명령어
+
+```bash
+git init
+git add .
+git commit -m "init"
+```
++ c9에 있는 코드들을 heroku에 바로 던질 수 없다. c9이 GIT으로 코드를 전달하고 heroku는 GIT을 통해서 소스코드를 받아서 돌린다.
+
+Q7. heroku create
+
+```bash
+heroku create <name>
+```
+
++ 에러가 뜰 수도 있는데 그러면 중지하고 다시 명령어를 입력한다.
++ c9에 있는 코드를
+
+Q8. c9 -> git -> heroku
+
+```bash
+git push heroku master
+```
+
++ git에 c9에 있는 모든 코드가 올라간 후, heroku가 git에 있는 코드를 받아온다.
++ 마지막 줄에 있는 헤로쿠 주소를 복사해둔다.
+
+Q9. heroku 접속
+
++ dashboard.heroku.com
+
+Q10. database 연결
+
+```bash
+heroku run rake db:migrate
+```
+
++ c9이 아닌 heroku에 database를 만든다.
+
+
+---
+
+## 13 멋사 6주차 (게시판, 댓글)
 
 ### 1:N 관계 (이론)
 

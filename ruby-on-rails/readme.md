@@ -111,6 +111,7 @@ heroku run rake db:migrate
 
 + c9이 아닌 heroku에 database를 만든다.
 
+**끝.**
 
 ---
 
@@ -646,7 +647,7 @@ Q10. form 태그의 action 설정하기
 ```
 
 + 글을 작성하여 submit 눌러본다.
-+ toek 오류가 발생한다.
++ token 오류가 발생한다.
 + 전에는 controller 폴더의 application_controller.rb 파일에서 protect로 시작하는 라인을 주석처리를 했었다.
 
 ```ruby

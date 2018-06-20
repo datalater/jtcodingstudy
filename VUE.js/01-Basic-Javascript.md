@@ -2,6 +2,123 @@
 
 ---
 
+### 02주차 조건문
+
+Q1. JMC가 28세 인데 19세 이상일 경우 담배를 판매할 수 있다는 메시지를 alert() 함수로 출력해보자. (단, 템플릿 문자열을 사용해보자)
+
+```javascript
+<script>
+    var jmc = 28;
+    if (jmc > 19) {
+        alert(`jmc는 ${jmc}세이므로 주류를 구매할 수 있습니다.`)
+    }
+</script>
+```
+
++ 이번에는 사용자의 나이를 직접 입력 받아서 Q1과 같은 메시지를 출력해보자.
+
+```javascript
+<script>
+    var userAge = Number(prompt('나이를 입력하세요', 'ex. 19'));
+
+    if (userAge > 19) {
+        alert(`고객님은 ${userAge}세이므로 주류를 구매할 수 있습니다.`)
+    }
+</script>
+```
+
+Q2. 현재 시각에 따라 오전과 오후를 구분하는 프로그램을 만들어보자.
+
++ 현재 시각을 구하는 코드는 다음과 같다.
+
+```javascript
+var date = new Date();
+var hour = date.getHours();
+```
+
++ 정답
+
+```javascript
+<script>
+    var date = new Date();
+    var hour = date.getHours();
+
+    if (hour >= 12) {
+    	alert(`현재 시간은 ${hour}시이므로 오후입니다.`)
+    }
+    else {
+    	alert(`현재 시간은 ${hour}시이므로 오전입니다.`)
+    }
+</script>
+```
+
+Q3. 현재 날짜에 따라 3~5월이면 봄, 6~8월이면 여름, 9~11이면 가을, 12~2월이면 겨울로 계절을 구분하는 프로그램을 만들어보자.
+
++ 현재 날짜(월)를 구하는 코드는 구글링을 직접 해본다.
++ 정답
+
+```javascript
+<script>
+    var date = new Date();
+    var month = date.getMonth();
+
+    if (5>= month && month >=3) {
+    	alert(`현재 날짜는 ${month}월이므로 봄입니다.`)
+    }
+    else if (8 >= month && month >= 6) {
+    	alert(`현재 날짜는 ${month}월이므로 여름입니다.`)
+    }
+    else if (11 >= month && month >= 9) {
+    	alert(`현재 날짜는 ${month}월이므로 가을입니다.`)
+    }
+    else {
+    	alert(`현재 날짜는 ${month}월이므로 겨울입니다.`)
+    }
+</script>
+```
+
++ `5>= month >=3` 이런 식으로 하면 안 되는 이유를 반드시 알고 넘어가자.
+
+Q4. 삼항 연산자 조건문
+
+---
+
+### 02주차 템플릿 문자열
+
+Q1. 템플릿 문자열로 문자열 내부에 표현식 삽입하기
+
+```javascript
+<script>
+    alert('표현식 273 + 52의 값은 ' + (273 + 52) +'입니다!!');
+</script>
+```
+
++ 표현식 결합을 많이 하면 코드가 복잡해진다.
++ ECMAScript 6부터는 '템플릿 문자열'이라는 기능을 추가해 표현식 결합을 간단하게 작성할 수 있게 되었다.
+
+```javascript
+<script>
+    alert(`표현식 273 + 52의 값은 ${52 + 273}입니다!!`);
+</script>
+```
+
++ 템플릿 문자열은 "\`" 기호로 감싸 만들며, 문자열 내부에 "${}" 기호를 사용합니다.
+
+> **Note**: ECMAScript는 유럽 컴퓨터 제조협회(European Computer Manufacturer's Association)가 정한 자바스크립트의 표준 명칭이다. 하지만 자바스크립트라는 용어를 더 오래 사용해왔으므로 일반적으로 자바스크립트라는 명칭을 쓰고, 자바스크립트의 표준 버전이 달라질 때는 ECMAScript 6 이런 식으로 표기한다.
+
+```javascript
+<script>
+    var variable = 273;
+    alert(`변수 variable의 값은 ${variable}`입니다.)
+</script>
+```
+
++ 굉장히 편리한 기능이지만 모든 버전의 인터넷 익스플로러에서 사용이 불가능하다. 따라서 모든 버전의 인터넷 익스플로러에 대응해야 하는 웹 페이지를 만들 때는 주의해서 사용해야 한다.
+
+**END**
+
+---
+
 ### 01주차 기본 문법
 
 Q1. 기본 문법에서 알아야 할 용어
@@ -242,6 +359,64 @@ Q16. 문자열 자료형을 숫자 자료형으로 자동 변환
     alert('52' * 273);
     alert(52 * '273');
     alert('52' * '273');
+</script>
+```
+
+Q17. 강제 변환
+
++ Number()
++ String()
+
+```javascript
+<script>
+    var input = prompt('숫자를 입력해주세요.', '숫자');
+
+    alert(typeof(input))
+</script>
+```
+
+```javascript
+<script>
+    var input = prompt('숫자를 입력해주세요.', '숫자');
+    var numberInput = Number(input);
+
+    alert(typeof(numberInput) + ': ' + numberInput);
+</script>
+```
+
++ Boolean()
+
+```javascript
+<script>
+    alert(Boolean(0));
+    alert(Boolean(NaN));
+    alert(Boolean(''));
+    alert(Boolean(null));
+    alert(Boolean(undefined));
+    alert(Boolean('false'));
+</script>
+```
+
+Q18. 일치 연산자
+
+```javascript
+<script>
+    alert('' == false);
+    alert('' == 0);
+    alert(0 == false);
+    alert('273' == 273);
+</script>
+```
+
++ 비교 연산자를 사용하면 자동으로 자료형이 변환되어 네 가지 모두 true를 출력한다.
++ 자동으로 자료형이 변환되는 것을 막고 원하는 자료형을 확실하게 구분짓고 싶다면 일치 연산자를 사용한다.
+
+```javascript
+<script>
+    alert('' === false);
+    alert('' === 0);
+    alert(0 === false);
+    alert('273' === 273);
 </script>
 ```
 

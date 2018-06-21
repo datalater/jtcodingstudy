@@ -1,10 +1,282 @@
 ⓒ JMC 2018
 
+**Source**: 모던 웹을 위한 JavaScript, jQuery 입문, 윤인성 (3판)
+
+---
+
+### 03주차 반복문과 배열
+
+Q1. 반복문의 힘
+
++ 컴퓨터가 인간에 비해 월등히 뛰어난 능력이 '반복'이다.
++ `alert('출력');`을 100번 실행해보자.
+
+```html
+<script>
+    for (var i = 0; i < 100; i++) {     // 100 = 반복횟수
+        alert(i + '번째 출력');          // alert 문장을 실행한 이후에 i+=1이 된다.
+    }
+</script>
+```
+
++ `alert('버그 아님');`을 29번 실행해보자.
+
+Q2. 여러 개의 변수를 한꺼번에 다룰 수 있는 자료형인 배열을 알아보자.
+
++ 배열은 객체 자료형에 속한다.
++ 배열은 대괄호로 생성한다.
+
+```html
+<script>
+    var array = ["Jay", "0123", "Will", "0202"]
+</script>
+```
+
++ 배열을 출력해보자.
+
+```html
+<script>
+    var array = ["Jay", "0123", "Will", "0202"]
+
+    alert(array)
+</script>
+```
+
++ 배열의 요소에 접근해보자.
+
+```html
+<script>
+    var array = ["Jay", "0123", "Will", "0202"]
+
+    alert(array[0]);
+    alert(array[1]);
+    alert(array[2] + "의 생일은 " + array[3] + "입니다.")
+</script>
+```
+
+Q3. 배열이라는 객체의 속성과 메서드는
+
++ 속성: 특정 객체가 갖고 있는 변수
++ 메서드: 특정 객체가 갖고 있는 함수
+
++ 배열의 길이를 알려주는 length 속성을 출력해보자.
+
+```html
+<script>
+    var arrayA = [0, 1, 2, 3];
+    var arrayB = [0, 1, 2, 3, 4, 5, 6];
+
+    alert("length of A: " + arrayA.length);
+    alert("length of B: " + arrayB.length);
+</script>
+```
+
++ 배열의 요소를 추가하는 push() 메서드를 실행해보자.
+
+```html
+<script>
+    var array = [0, 1];
+
+    array.push(2);
+    array.push(3);
+
+    alert(array);
+</script>
+```
+
+Q4. while 반복문 활용하기
+
++ 자바스크립트의 가장 간단한 반복문이다. if 조건문과 형태가 비슷하다.
++ 불 표현식이 참인 동안 지속적으로 문장을 실행한다.
+
+```html
+<script>
+    var value = 0;
+
+    while (value < 5) {
+        alert(value+ '번째 반복');
+        value++
+    }
+</script>
+```
+
++ 경고창(alert)을 다섯 번 출력한다.
++ 시간으로 조건을 변화시켜 반복문을 설정할 수도 있다.
+
+```html
+<script>
+    var value = 0;
+    var startTime = new Date().getTime();
+
+    while (new Date().getTime() < startTime + 1000) { value++; }
+
+    alert(value);
+</script>
+```
+
++ 1000밀리 초 (1초) 동안 `value++;`을 실행한다.
+
+Q5. do while 반복문 활용하기
+
++ while 반복문은 조건을 먼저 검사하고 코드 블록을 반복한다.
++ do while 반복문은 내부의 문장을 최소한 한 번을 실행하고 코드 블록을 반복한다.
+
+```html
+<script>
+    var value = 0;
+
+    do {
+        alert(value + '번째 반복문');
+        value++;
+    } while (value < 5)
+</script>
+```
+
++ 예를 들어 '사용자에게 전화번호를 물어보고, 전화번호 형식이 아니라면 전화번호 형식을 입력할 때까지 반복'하는 경우가 있다. 적어도 한 번은 일단 물어보고 시작해야 하므로 do while 반복문을 사용할 수 있다.
+
+Q6. for 반복문 활용하기
+
++ while 반복문이 조건에 비중을 둔다면 for 반복문은 횟수에 비중을 둔다.
+
+```html
+<script>
+    for (초기식; 조건식; 종결식;) {
+        문장
+    }
+</script>
+```
+
++ (1) 초기식을 실행한다.
++ (2) 조건식을 비교한다. 조건이 거짓이면 반복문을 종료한다.
++ (3) 문장을 실행한다.
++ (4) 종결식을 실행한다.
++ (5) 2단계로 간다.
+
+```html
+<script>
+    for (var i = 0; i < 5; i++) {
+        alert(i + '번째 반복');
+    }
+</script>
+```
+
++ 배열의 요소를 반복문으로 모두 출력하기
+
+```html
+<script>
+    var array = ['원숭이 엉덩이', '빨개', '사과', '맛있어', '바나나', '길어', '기차']
+
+    for (var i = 0; i < array.length; i++) {
+        alert(array[i])
+    }
+</script>
+```
+
++ 배열의 요소를 역으로 출력할 수도 있다.
+
+```html
+<script>
+    var array = ['원숭이 엉덩이', '빨개', '사과', '맛있어', '바나나', '길어', '기차']
+
+    for (var i = array.length - 1; i >= 0; i--) {
+        alert(array[i])
+    }
+</script>
+```
+
++ 배열의 인덱스는 0부터 시작하므로 마지막 요소를 출력하려면 array.length에서 1을 빼줘야 한다.
+
++ 하지만 배열을 반복문에서 다룰 때는 for in 반복문을 사용하는 것이 효율적이다.
+
+```html
+<script>
+    var array = ['원숭이 엉덩이', '빨개', '사과', '맛있어', '바나나', '길어', '기차']
+
+    for (var i in array) {
+        alert(array[i])
+    }
+</script>
+```
+
+Q7. 브라우저의 성능을 측정하는 프로그램 만들기
+
++ 아래 코드에서 추가로 for 반복문을 사용해서 1초 동안 반복문이 몇 회 반복되는지 표시해 브라우저의 성능을 측정해보자.
+
+```html
+<script>
+    var startTime = new Date().getTime(); // 현재 시간 구하기
+</script>
+```
+
++ 정답
+
+```html
+<script>
+    var startTime = new Date().getTime();
+
+    for (var speed = 0; new Date().getTime() < startTime + 1000; speed++) {}
+    alert('초 당 연산 횟수: ' + speed);
+</script>
+```
+
+Q8. 중첩 반복문 (1)
+
++ 10층 짜리 별 트리를 만들어라. 1층에 별 1개, 2층에 별 2개, ...
++ 책 저자도 처음 프로그래밍을 배울 때는 이 예제를 직접 완성하지 못하고 결국 답지를 보았다고 한다. 또 일을 5년 정도 하다가 동료들과 이야기가 나와서 만들어봤는데 또 못 만들겠다고 하더라. 원래 어려운 것이니 만들지 못해도 크게 낙심하지 말자.
++ 정답
+
+```html
+<script>
+    var output = '';
+
+    for (var i = 0; i < 10; i++) {
+    	for (var j = 0; j < i; j++) {
+      	output += "*";
+      }
+      output += "\n";
+    }
+
+    alert(output);
+</script>
+```
+
+Q9. 중첩 반복문 (2)
+
++ 별 트리가 가운데 정렬되도록 만들어라.
++ 정답
+
+```html
+<script>
+    var output = '';
+
+    for (var i = 0; i < 15; i++) {
+        for (var j = 15; j > i; j--) {
+            output += " ";
+        }
+        for (var k = 0; k < 2 * i - 1; k++) {
+            output += "*";
+        }
+        output += "\n";
+    }
+
+    alert(output);
+
+</script>
+```
+
+Q10. break 키워드
+
++ 반복문을 벗어난다.
+
+Q11. continue 키워드
+
++ 현재 반복을 멈추고 다음 반복을 진행시킨다.
+
 ---
 
 ### 02주차 조건문
 
-Q1. JMC가 28세 인데 19세 이상일 경우 담배를 판매할 수 있다는 메시지를 alert() 함수로 출력해보자. (단, 템플릿 문자열을 사용해보자)
+Q1. JMC가 28세 인데 19세 이상일 경우 주류를 판매할 수 있다는 메시지를 alert() 함수로 출력해보자. (단, 템플릿 문자열을 사용해보자)
 
 ```javascript
 <script>
@@ -52,7 +324,7 @@ var hour = date.getHours();
 </script>
 ```
 
-Q3. 현재 날짜에 따라 3~5월이면 봄, 6~8월이면 여름, 9~11이면 가을, 12~2월이면 겨울로 계절을 구분하는 프로그램을 만들어보자.
+Q3. 현재 날짜에 따라 3-5월이면 봄, 6-8월이면 여름, 9-11월이면 가을, 12-2월이면 겨울로 계절을 구분하는 프로그램을 만들어보자.
 
 + 현재 날짜(월)를 구하는 코드는 구글링을 직접 해본다.
 + 정답
@@ -60,7 +332,7 @@ Q3. 현재 날짜에 따라 3~5월이면 봄, 6~8월이면 여름, 9~11이면 �
 ```javascript
 <script>
     var date = new Date();
-    var month = date.getMonth();
+    var month = date.getMonth()+1; // january = 0
 
     if (5>= month && month >=3) {
     	alert(`현재 날짜는 ${month}월이므로 봄입니다.`)
@@ -80,6 +352,100 @@ Q3. 현재 날짜에 따라 3~5월이면 봄, 6~8월이면 여름, 9~11이면 �
 + `5>= month >=3` 이런 식으로 하면 안 되는 이유를 반드시 알고 넘어가자.
 
 Q4. 삼항 연산자 조건문
+
++ 삼항 연산자의 기본 형태
+
+```javascript
+// 불 표현식 ? 참일 때 실행하는 문장 : 거짓일 때 실행하는 문장
+(number > 0) ? alert('0보다 큽니다.') : alert('0보다 크지 않습니다');
+```
+
+Q5. 이항 연산자 조건문
+
++ 이항 연산자의 기본 형태
+
+```javascript
+// 불 표현식 || 거짓일 때 실행할 문장
+// 불 표현식 && 참일 때 실행할 문장
+
+true || false;
+false || anything;
+
+true || alert('실행될까요 A');
+false || alert(' 실행될까요 B');
+```
+
++ 논리합 연산자(||, or)는 좌변이 참이면 우변을 실행하지 않는다. (원리)
++ 논리합 연산자(||, or)는 좌변이 거짓이면 우변을 실행한다. (적용)
+
+```javascript
+// 불 표현식 || 거짓일 때 실행할 문장
+// 불 표현식 && 참일 때 실행할 문장
+
+true && alert('실행될까요 A');
+false && alert(' 실행될까요 B');
+```
+
++ 논리합 연산자(||, or)는 좌변이 거짓이면 우변을 실행하지 않는다. (원리)
++ 논리합 연산자(||, or)는 좌변이 참이면 우변을 실행한다. (적용)
+
+```html
+<script>
+    var input = Number(prompt('숫자를 입력해주세요.'));
+
+    input % 2 == 0 || alert('홀수입니다'); // 0으로 나눠지지 않으면 홀수입니다.
+    input % 2 == 0 && alert('짝수입니다'); // 0으로 나눠지면 짝수입니다.
+</script>
+```
+
++ 다른 조건문 코드와 비교했을 때 이해하기 어려우므로 이항 연산자 조건문은 많이 사용하지는 않는다.
+
+Q6. indexOf() 메서드
+
+```html
+<script>
+    var output = "안녕하세요".indexOf("안녕");
+
+    alert(output);
+</script>
+```
+
++ indexOf() 메서드는 앞에 있는 문자열 에 뒤에 있는 문자열이 포함되어 있을 경우 위치를 출력한다.
++ "안녕하세요"라는 문자열 안에 "안녕"이라는 문자열이 가장 앞에 포함되어 있다.
++ 자바스크립트는 숫자를 0부터 세기 때문에 "안녕"이라는 문자열의 위치는 0번째 위치이다.
++ 따라서 0을 출력한다.
+
+```html
+<script>
+    var output = "안녕하세요".indexOf("잘자");
+
+    alert(output);
+</script>
+```
+
++ 앞의 문자열에 뒤의 문자열이 포함되어 있지 않으면 무조건 음수(-1)로 출력한다.
+
+Q7. indexOf() 메서드와 조건문을 활용하여 인사하는 프로그램 만들기
+
++ prompt() 함수로 문자열을 입력받아 "안녕"이 들어가 있으면 "안녕하세요", "잘자" 또는 "잘 자"를 입력하면 "안녕히 주무세요"를 출력하는 코드를 작성하세요. 만약, 둘 다 들어있지 않다면 "잘못 입력되었습니다"라고 출력하세요.
++ 정답
+
+```html
+<script>
+    var input = prompt("인사를 해주세요.", "ex. 안녕 or 잘 자")
+    if (input.indexOf("안녕") != -1) {
+        alert("안녕하세요.")
+    }
+    else if (input.indexOf("잘 자") != 1 || input.indexOf("잘자") != 1) {
+        alert("안녕히 주무세요.")
+    }
+    else {
+        alert("잘못 입력되었습니다.")
+    }
+</script>
+```
+
+**END**
 
 ---
 
@@ -119,7 +485,142 @@ Q1. 템플릿 문자열로 문자열 내부에 표현식 삽입하기
 
 ---
 
-### 01주차 기본 문법
+### 01주차 기본 문법 (2)
+
+Q1. 이름(식별자)을 지을 때 알야아 하는 규칙
+
++ 키워드를 사용하면 안 된다. ex. if, return, typeof, var
++ 숫자로 시작하면 안 된다. ex. 10hakbun
++ 특수문자는 언더스코어( _ )와 달러( $ )만 허용한다.
++ 공백 문자를 포함하면 안 된다. ex. change title
+
+```javascript
+// 아래는 모두 이름으로 사용할 수 있다.
+alpha
+alpha10
+_alpha
+$alpha
+Alpha
+ALPHA
+```
+
+Q2. 자바스크립트에서 정해진 키워드(예약어)를 한 번 훑어보고 넘어가자.
+
+```javascript
+true    false       var             if          this        while       with
+do      delete      in              throw       try         finally     catch
+new     break       instanceof      typeof      return      delete      void
+```
+
+```javascript
+abstract    debugger    goto            Native          super
+await       double      implements      package         synchronized
+boolean     enum        import          private         throws
+byte        export      int             protected       transient
+char        extends     interface       public          volatile
+class       final       let             short           yield
+const       float       long            static          
+```
+
++ 절대 외울 필요없이 그냥 단기 기억으로 스쳐 지나가자.
+
+Q3. 이름 vs 함수 구분하는 법
+
++ 이름 뒤에 괄호 있으면 함수    ex. alert()
++ 이름 뒤에 괄호 없으면 변수    ex. input
+
+Q4. 이스케이프 문자
+
++ 따옴표는 원래 문자열을 만들 때 사용한다. 그런데 따옴표 자체를 문자열로 쓰고 싶을 때가 있다.
+
+```javascript
+alert("This is \"string\"");
+```
+
++ 이스케이프 문자(\, 백슬래시)를 앞에 써주면 된다.
+
+Q5. 이스케이프 문자의 특수 기능
+
+```javascript
+alert('동해물과 백두산이\n마르고 닳도록');
+```
+
++ 이스케이프 문자 `\n`을 사용하면 문자열을 줄 바꿈 한다.
++ 이스케이프 문자: `\t`, `\n`, `\'`, `\"`, `\\`
+
+> **Note**: 일부 웹 브라우저는 경고창에서 `'\t'`를 인식하지 않을 수 있다.
+
+Q6. 비교 연산자
+
++ `>=`
++ `<=`
++ `==`
++ `!=`
+
+Q7. 비교 연산자와 문자열 자료형
+
++ 비교 연산자로 문자열 자료형도 비교할 수 있다.
++ 문자열 자료형은 국어사전의 앞쪽에 있을수록 값이 작아진다.
+
+Q8. 논리 연산자
+
++ `!` : not
++ `&&` : and
++ `||`: or
+
+```javascript
+alert(!true);
+alert(true && true)
+alert(true || false)
+```
+
+Q9. 3개 이상의 숫자 자료형의 크기를 비교할 때
+
++ 비교 연산자와 논리 연산자를 함께 사용해야 정확하게 확인할 수 있다.
++ 비교 연산자만 사용한다면 원하지 않는 결과가 발생할 수 있다.
+
+```javascript
+alert(30 > 20 > 10);
+```
+
++ 비교 연산자가 여러 개 있을 경우 왼쪽부터 차례대로 연산하면서 참과 거짓을 판단한다.
++ alert((30 > 20) > 10);
++ alert(true > 10);
++ alert(1 > 10);
++ alert(false);
+
+```javascript
+alert(30 > 20 && 20 > 10);
+```
+
++ alert(true && true);
++ alert(true);
+
+Q10. undefined 자료형
+
+```javascript
+alert(typeof(variable));
+```
+
++ 선언
+
+```javascript
+var variable;
+alert(typeof(variable));
+```
+
++ 선언 + 초기화
+
+```javascript
+var variable = "변수";
+alert(typeof(variable));
+```
+
+**END**
+
+---
+
+### 01주차 기본 문법 (1)
 
 Q1. 기본 문법에서 알아야 할 용어
 
@@ -350,6 +851,8 @@ Q15. 숫자 자료형을 문자열 자료형으로 자동 변환
 </script>
 ```
 
++ 숫자와 문자열을 덧셈하면 숫자를 문자열로 자동 변환한다.
+
 Q16. 문자열 자료형을 숫자 자료형으로 자동 변환
 
 ```javascript
@@ -362,10 +865,12 @@ Q16. 문자열 자료형을 숫자 자료형으로 자동 변환
 </script>
 ```
 
++ 덧셈을 제외한 사칙 연산자는 문자열을 숫자로 자동 변환한다.
+
 Q17. 강제 변환
 
-+ Number()
-+ String()
++ Number() : 다른 자료형을 숫자로 바꾼다.
++ String() : 다른 자료형을 문자열로 바꾼다.
 
 ```javascript
 <script>
@@ -384,7 +889,17 @@ Q17. 강제 변환
 </script>
 ```
 
-+ Boolean()
+```javascript
+<script>
+    var numberInput = Number(prompt('숫자를 입력해주세요.', '숫자'));
+
+    alert(typeof(numberInput) + ': ' + numberInput);
+</script>
+```
+
+> **Note**: 숫자가 아닌 값을 입력한 경우 NaN(Not a Number)값을 출력한다. `alert(Math.sqrt(-3));`
+
++ Boolean() : 다른 자료형을 불 자료형으로 바꾼다.
 
 ```javascript
 <script>

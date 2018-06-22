@@ -4,6 +4,43 @@
 
 ---
 
+### 04주차 함수
+
+Q1. 함수란 무엇인가
+
++ 재사용할 수 있는 코드 묶음이다.
+
+Q2. 함수 기본 용어
+
+번호  | 설명 | 개념
+--|---|--
+ 1 | 함수 내부의 코드를 실행하는 것 | 호출  
+ 2 | 함수에 자료 값을 넘기기 위해 사용하는 것 | 매개변수  
+ 3 | 함수를 실행한 결과로 나오는 것 | 리턴
+ 4 | 함수의 매개변수로 함수를 전달할 때 매개변수 함수를 지칭하는 말 | 콜백 함수  
+
+Q3. 기본 함수 만들기
+
+```html
+<script>
+    // 함수를 만든다.
+    var askNumber = function () {
+        var output = prompt('숫자를 입력하세요.');
+        alert(output + "을 입력하셨습니다.");
+    }
+    // 함수를 호출한다.
+    askNumber()
+</script>
+```
+
+Q4. 익명 함수
+
+Q5. 선언적 함수
+
+
+
+---
+
 ### 03주차 반복문과 배열
 
 Q1. 반복문의 힘
@@ -186,6 +223,8 @@ Q6. for 반복문 활용하기
 
 + 배열의 인덱스는 0부터 시작하므로 마지막 요소를 출력하려면 array.length에서 1을 빼줘야 한다.
 
+Q6-1. for in 반복문 (인덱스)
+
 + 하지만 배열을 반복문에서 다룰 때는 for in 반복문을 사용하는 것이 효율적이다.
 
 ```html
@@ -194,6 +233,20 @@ Q6. for 반복문 활용하기
 
     for (var i in array) {
         alert(array[i])
+    }
+</script>
+```
+
++ for in 반복문에 배열을 넣으면, 반복변수 i에 '요소'가 아니라 '인덱스'가 들어간다.
+
+Q6-2. for of 반복문 (요소)
+
++ 반복변수 i에 '요소'가 들어간다.
+
+```html
+<script>
+    for (var i of [1, 2, 3, 4]) {
+        alert(i)
     }
 </script>
 ```
@@ -268,9 +321,101 @@ Q10. break 키워드
 
 + 반복문을 벗어난다.
 
+```html
+<script>
+    for (var i = 0; true; i++) {
+        alert(i + '번째 반복문입니다.');
+
+        if (!confirm('계속하시겠습니까?')) {
+            break;
+        }
+    }
+    alert('프로그램 종료');
+</script>
+```
+
 Q11. continue 키워드
 
 + 현재 반복을 멈추고 다음 반복을 진행시킨다.
+
+```html
+<script>
+    for (var i = 0; i < 5; i++) {
+        continue;
+        alert(i)
+    }
+</script>
+```
++ 0~10까지 중에서 홀수이면 다음 반복문으로 넘어가고 짝수이면 누적시켜서 합을 구하는 프로그램을 만들어보자.
+
+```html
+<script>
+    var output = 0;
+
+    for (var i = 0; i <= 10; i++) {
+        if (i % 2 == 1) {
+            continue
+        }
+        output += i;
+    }
+    alert (output);
+</script>
+```
+
+Q12. 연습문제
+
++ (1) 1부터 100까지 더하는 프로그램을 만들어보자.
+
+```html
+<script>
+    var output = 0;
+
+    for (var i = 1; i <= 100; i++) {
+        output +=i
+    }
+    alert(output);
+</script>
+```
+
++ (2) 사용자에게 입력을 받아 특정한 숫자부터 특정한 숫자까지 더하는 프로그램을 만들어보자.
+
+```html
+<script>
+    var output = 0;
+    var startNum = Number(prompt("시작 숫자를 입력하세요."))
+    var endNum = Number(prompt("마지막 숫자를 입력하세요."))
+
+    for (var i = startNum; i <= endNum; i++) {
+        output += i
+    }
+
+    alert(output)
+</script>
+```
+
++ (3) [52, 273, 103, 32, 57, 103, 31, 2]와 같은 숫자 배열에서 최대값과 최소값을 찾는 코드를 작성해보자.
+
+```html
+<script>
+    var arrayA = [52, 273, 103, 32, 57, 103, 31, 2]
+
+    var maxValue = arrayA[1];
+    var minValue = arrayA[1];
+
+    for (var element of arrayA) {
+        if (element > maxValue) {
+            maxValue = element;
+        }
+        if (element < minValue) {
+            minValue = element;
+        }
+    }
+    alert(maxValue + ", " + minValue);
+
+</script>
+```
+
+**END**
 
 ---
 
